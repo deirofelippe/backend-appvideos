@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+   backend-appvideos:
+      build: .
+      container_name: backend-appvideos
+      ports:
+        - 3000:3000
+      volumes:
+        - .:/app
