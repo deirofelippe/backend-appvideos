@@ -12,7 +12,7 @@ const usuarioFactory = require("../../usuarioFactory.js");
 const truncate = require("../../truncate.js");
 const logger = require("../../../src/logger.js");
 
-// beforeAll(() => jest.spyOn(logger, "info").mockImplementation());
+beforeAll(() => jest.spyOn(logger, "info").mockImplementation());
 
 describe("usuario.dao", () => {
    beforeAll(async () => {
