@@ -1,12 +1,4 @@
-const {
-   describe,
-   test,
-   expect,
-   // jest,
-   afterAll,
-   beforeAll,
-   beforeEach,
-} = require("@jest/globals");
+const { describe, test, expect } = require("@jest/globals");
 const usuarioFactory = require("../../usuarioFactory.js");
 const service = require("../../../src/service/usuario.service.js");
 const uuid = require("uuid");
