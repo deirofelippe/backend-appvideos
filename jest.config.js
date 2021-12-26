@@ -14,10 +14,10 @@ module.exports = {
    // cacheDirectory: "/tmp/jest_rs",
 
    // Automatically clear mock calls, instances and results before every test
-   // clearMocks: true,
+   clearMocks: true,
 
    // Automatically reset mock state before every test
-   // resetMocks: false,
+   resetMocks: false,
 
    // Automatically restore mock state and implementation before every test
    // restoreMocks: false,
