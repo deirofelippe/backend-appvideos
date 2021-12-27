@@ -6,9 +6,7 @@ const {
    beforeAll,
 } = require("@jest/globals");
 const faker = require("faker");
-const {
-   validarUsuario,
-} = require("../../../src/middleware/validacao/usuario.validacao.js");
+const validarUsuario = require("../../../src/validacao/usuario.validacao.js");
 const logger = require("../../../src/logger.js");
 
 beforeAll(() => jest.spyOn(logger, "error").mockImplementation());
@@ -60,7 +58,7 @@ describe("Validação de usuário", () => {
       });
 
       test("Nome deve ter uma máximo de caracteres", async () => {
-         req.body.nome = "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii";
+         req.body.nome = faker.lorem.words(40);
          req.body.email = faker.internet.email();
 
          await validarUsuario(req, res, next);
@@ -79,6 +77,16 @@ describe("Validação de usuário", () => {
          expectedError.errors.email = ["Email inválido"];
 
          expect(res.status().send).toHaveBeenCalledWith(expectedError);
+      });
+
+      test("Nao deve ter erro e deve chamar o metodo next()", async () => {
+         req.body.nome = faker.name.findName();
+         req.body.email = faker.internet.email();
+
+         await validarUsuario(req, res, next);
+
+         expect(res.status).toHaveBeenCalledTimes(0);
+         expect(next).toHaveBeenCalledTimes(1);
       });
    });
 });
