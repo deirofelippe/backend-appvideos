@@ -10,7 +10,7 @@ async function findAll() {
       return usuarios;
    } catch (error) {
       logger.error(error);
-      throw new Error(error);
+      throw Error(error);
    }
 }
 
@@ -21,7 +21,7 @@ async function create(usuario) {
       return result;
    } catch (error) {
       logger.error(error);
-      throw new Error(error);
+      throw Error(error);
    }
 }
 
@@ -32,7 +32,7 @@ async function findById(id) {
       return result;
    } catch (error) {
       logger.error(error);
-      throw new Error(error);
+      throw Error(error);
    }
 }
 
@@ -43,7 +43,7 @@ async function findToUpdate(id) {
       return result;
    } catch (error) {
       logger.error(error);
-      throw new Error(error);
+      throw Error(error);
    }
 }
 
@@ -56,7 +56,7 @@ async function update(novoUsuario) {
       return result;
    } catch (error) {
       logger.error(error);
-      throw new Error(error);
+      throw Error(error);
    }
 }
 
@@ -67,7 +67,7 @@ async function remove(id) {
       return result;
    } catch (error) {
       logger.error(error);
-      throw new Error(error);
+      throw Error(error);
    }
 }
 

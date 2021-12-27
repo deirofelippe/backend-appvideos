@@ -1,6 +1,6 @@
 const yup = require("yup");
 const { setLocale } = require("yup");
-const logger = require("../../logger.js");
+const logger = require("../logger.js");
 
 setLocale({
    string: {
@@ -52,6 +52,4 @@ function montarMensagemDeErro({ inner: errors }) {
    return errorsMsg;
 }
 
-module.exports = {
-   validarUsuario,
-};
+module.exports = validarUsuario;
