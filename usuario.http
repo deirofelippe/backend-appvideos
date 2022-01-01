@@ -2,8 +2,10 @@ POST http://localhost:3000/usuario HTTP/1.1
 content-type: application/json
 
 {
-    "nome": "eu",
-    "email": "eu@gmail.com"
+    "nome": "euu",
+    "email": "eu@mail.com",
+    "senha": "eu.gmail.br.redes.com",
+    "cpf": "17241770790"
 }
 
 ###

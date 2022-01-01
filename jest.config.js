@@ -17,7 +17,7 @@ module.exports = {
    clearMocks: true,
 
    // Automatically reset mock state before every test
-   resetMocks: true,
+   // resetMocks: true,
 
    // Automatically restore mock state and implementation before every test
    // restoreMocks: true,
