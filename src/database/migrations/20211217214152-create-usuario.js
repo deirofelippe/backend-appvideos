@@ -1,17 +1,26 @@
 const migration = {
    up: async (queryInterface, Sequelize) => {
-      await queryInterface.createTable("usuarios", {
+      await queryInterface.createTable("Usuarios", {
          id: {
             type: Sequelize.DataTypes.UUID,
             primaryKey: true,
             allowNull: false,
          },
          nome: {
-            type: Sequelize.DataTypes.STRING,
+            type: Sequelize.DataTypes.STRING(70),
             allowNull: false,
          },
          email: {
+            type: Sequelize.DataTypes.STRING(70),
+            allowNull: false,
+            unique: true,
+         },
+         senha: {
             type: Sequelize.DataTypes.STRING,
+            allowNull: false,
+         },
+         cpf: {
+            type: Sequelize.DataTypes.STRING(14),
             allowNull: false,
             unique: true,
          },
@@ -26,7 +35,7 @@ const migration = {
       });
    },
    down: async (queryInterface, Sequelize) => {
-      await queryInterface.dropTable("usuarios");
+      await queryInterface.dropTable("Usuarios");
    },
 };
 
