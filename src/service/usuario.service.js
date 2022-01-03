@@ -8,7 +8,13 @@ async function findAll() {
    const usuariosCache = await cache.buscarDadosNaCache("usuarios");
    if (usuariosCache) return usuariosCache;
 
-   const usuarios = await dao.findAll();
+   let usuarios;
+   try {
+      usuarios = await dao.findAll();
+   } catch (error) {
+      throw error;
+   }
+
    if (!usuarios) return usuarios;
 
    await cache.gravarDadosNaCache("usuarios", usuarios);
