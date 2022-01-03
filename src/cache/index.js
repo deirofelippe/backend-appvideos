@@ -12,7 +12,7 @@ async function buscarDadosNaCache(chave) {
       const result = await redis.get(chave);
       return result || JSON.parse(result);
    } catch (error) {
-      logger.error(error);
+      logger.error("[ERRO NA CACHE, BUSCAR]: " + error);
       return null;
    }
 }
@@ -21,7 +21,7 @@ async function gravarDadosNaCache(chave, valor) {
    try {
       await redis.set(chave, JSON.stringify(valor));
    } catch (error) {
-      logger.error(error);
+      logger.error("[ERRO NA CACHE, GRAVAR]: " + error);
    }
 }
 
@@ -29,8 +29,7 @@ async function removerDadosNaCache(chave) {
    try {
       redis.set(chave, "");
    } catch (error) {
-      logger.error("[ERRO NA CACHE]: " + error);
-      throw montarError(500, { msg: ["Algo deu errado!"] });
+      logger.error("[ERRO NA CACHE, REMOVER]: " + error);
    }
 }
 
