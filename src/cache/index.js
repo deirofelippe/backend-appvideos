@@ -1,6 +1,7 @@
 require("dotenv").config();
 const logger = require("../logger.js");
 const Redis = require("ioredis");
+const montarError = require("../utils/montarError.js");
 const redis = new Redis({
    port: process.env.REDIS_PORT || 6379,
    host: process.env.REDIS_HOST,
@@ -28,7 +29,8 @@ async function removerDadosNaCache(chave) {
    try {
       redis.set(chave, "");
    } catch (error) {
-      logger.error(error);
+      logger.error("[ERRO NA CACHE]: " + error);
+      throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
 
