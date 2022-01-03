@@ -57,7 +57,24 @@ describe("usuario.service", () => {
          expect(result).toHaveLength(0);
       });
 
-      test.todo("Não deve ser retornado array vazio no dao.findAll");
+      test("Deve ser retornado usuarios no dao.findAll", async () => {
+         const usuarios = usuarioFactory(3);
+
+         jest
+            .spyOn(cache, cache.buscarDadosNaCache.name)
+            .mockResolvedValue(false);
+
+         jest.spyOn(dao, dao.findAll.name).mockResolvedValue(usuarios);
+         jest.spyOn(cache, cache.gravarDadosNaCache.name).mockImplementation();
+
+         const result = await service.findAll();
+
+         expect(cache.gravarDadosNaCache).toHaveBeenCalledWith(
+            "usuarios",
+            usuarios
+         );
+         expect(result).toHaveLength(3);
+      });
    });
 
    describe("#create", () => {
