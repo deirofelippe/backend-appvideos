@@ -40,14 +40,17 @@ async function create(usuario) {
    const senhaHash = await bcrypt.hash(usuario.senha, salt);
    usuario.senha = senhaHash;
 
+   let result;
    try {
-      const { senha, ...result } = await dao.create(usuario);
-      await cache.removerDadosNaCache("usuarios");
-
-      return result;
+      result = await dao.create(usuario);
+      delete result.senha;
    } catch (error) {
       throw error;
    }
+
+   await cache.removerDadosNaCache("usuarios");
+
+   return result;
 }
 
 module.exports = {
