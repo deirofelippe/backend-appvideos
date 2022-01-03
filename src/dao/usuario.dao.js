@@ -8,10 +8,11 @@ async function findAll() {
    try {
       const results = await model.findAll();
 
-      const usuarios = results.map(formatarRetorno);
-
       logger.info("Usuarios buscados: " + JSON.stringify(result));
-      return usuarios;
+
+      if (!results) return results;
+
+      return results.map(formatarRetorno);
    } catch (error) {
       logger.error(error);
       throw montarError(500, { msg: ["Algo deu errado!"] });
