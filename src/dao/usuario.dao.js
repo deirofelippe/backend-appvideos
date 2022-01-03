@@ -14,7 +14,7 @@ async function findAll() {
       return usuarios;
    } catch (error) {
       logger.error(error);
-      return null;
+      throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
 
