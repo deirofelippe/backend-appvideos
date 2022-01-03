@@ -5,8 +5,8 @@ const cache = require("../cache");
 const montarError = require("../utils/montarError.js");
 
 async function findAll() {
-   const usuariosCache = await cache.buscarDadosNaCache("usuarios");
-   if (usuariosCache) return usuariosCache;
+   const temUsuarioNaCache = await cache.buscarDadosNaCache("usuarios");
+   if (temUsuarioNaCache) return temUsuarioNaCache;
 
    let usuarios;
    try {
