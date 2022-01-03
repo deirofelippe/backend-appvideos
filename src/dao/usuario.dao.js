@@ -38,7 +38,7 @@ async function findByEmail(email) {
       return result?.dataValues;
    } catch (error) {
       logger.error(error);
-      return null;
+      return montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
 
