@@ -1,31 +1,102 @@
-const { describe, test, expect } = require("@jest/globals");
+const { describe, test, expect, beforeEach } = require("@jest/globals");
 const usuarioFactory = require("../../usuarioFactory.js");
+const cache = require("../../../src/cache");
 const service = require("../../../src/service/usuario.service.js");
-const uuid = require("uuid");
+const dao = require("../../../src/dao/usuario.dao.js");
+const montarError = require("../../../src/utils/montarError.js");
 
+const uuid = require("uuid");
 jest.mock("uuid");
 
 describe("usuario.service", () => {
    describe("#create", () => {
-      test.only("Deve gerar id e passar os parametros pro dao.create", async () => {
-         const dao = require("../../../src/dao/usuario.dao.js");
-         const usuario = usuarioFactory();
+      beforeEach(() => {
+         jest.restoreAllMocks();
+      });
+
+      test("Email já existente, deve lançar um erro", async () => {
+         jest.spyOn(dao, dao.findByEmail.name).mockResolvedValue(true);
+
+         const usuario = {};
+
+         const expectedError = montarError(401, {
+            email: ["Email já existente"],
+         });
+
+         const create = async () => await service.create(usuario);
+
+         await expect(create).rejects.toEqual(expectedError);
+         expect(dao.findByEmail).toHaveBeenCalledTimes(1);
+      });
+
+      test("dao.create deve lançar um erro", async () => {
+         const usuario = usuarioFactory()[0];
+
+         const error = { error: "BD" };
+         jest.spyOn(dao, dao.findByEmail.name).mockResolvedValue(false);
+         jest.spyOn(dao, dao.create.name).mockImplementation(() => {
+            throw error;
+         });
+
+         const expectedError = error;
+         const create = async () => await service.create(usuario);
+
+         await expect(create).rejects.toEqual(expectedError);
+         expect(dao.create).toHaveBeenCalledTimes(1);
+      });
+
+      test("cache.removerDados deve lancar um erro", async () => {
+         const usuario = usuarioFactory()[0];
+
+         const error = { error: "CACHE" };
+         jest.spyOn(dao, dao.findByEmail.name).mockResolvedValue(false);
+         jest.spyOn(dao, dao.create.name).mockResolvedValue(usuario);
+         jest
+            .spyOn(cache, cache.removerDadosNaCache.name)
+            .mockImplementation(() => {
+               throw error;
+            });
+
+         const expectedError = error;
+         const create = async () => await service.create(usuario);
+
+         await expect(create).rejects.toEqual(expectedError);
+         expect(dao.create).toHaveBeenCalledTimes(1);
+      });
+
+      test("Deve passa no teste e retornar um usuario", async () => {
+         const bcrypt = require("bcrypt");
 
          const id = "001";
          uuid.v4.mockReturnValue(id);
 
+         jest.spyOn(cache, cache.removerDadosNaCache.name).mockImplementation();
+         jest.spyOn(dao, dao.findByEmail.name).mockResolvedValue(false);
+         jest
+            .spyOn(bcrypt, bcrypt.hash.name)
+            .mockImplementation((senha) => `hash -> ${senha}`);
+         jest.spyOn(dao, dao.create.name).mockImplementation((usuario) => {
+            return {
+               ...usuario,
+               createdAt: new Date(),
+               updatedAt: new Date(),
+            };
+         });
+
+         const usuario = usuarioFactory()[0];
+
          const expectedParams = {
             ...usuario,
             id,
+            senha: `hash -> ${usuario.senha}`,
          };
 
-         jest.spyOn(dao, dao.create.name).mockResolvedValue({});
-
-         await service.create(usuario);
+         const result = await service.create(usuario);
 
          expect(dao.create).toHaveBeenCalledWith(expectedParams);
-         expect(uuid.v4).toHaveBeenCalled();
-         expect(dao.create).toHaveBeenCalled();
+         expect(cache.removerDadosNaCache).toHaveBeenCalledWith("usuarios");
+         expect(result.createdAt).toBeDefined();
+         expect(result.updatedAt).toBeDefined();
       });
    });
 });
