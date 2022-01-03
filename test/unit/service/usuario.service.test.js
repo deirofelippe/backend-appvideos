@@ -32,7 +32,7 @@ describe("usuario.service", () => {
       test("dao.create deve lançar um erro", async () => {
          const usuario = usuarioFactory()[0];
 
-         const error = { error: "BD" };
+         const error = { error: "BD CREATE" };
          jest.spyOn(dao, dao.findByEmail.name).mockResolvedValue(false);
          jest.spyOn(dao, dao.create.name).mockImplementation(() => {
             throw error;
@@ -43,6 +43,20 @@ describe("usuario.service", () => {
 
          await expect(create).rejects.toEqual(expectedError);
          expect(dao.create).toHaveBeenCalledTimes(1);
+      });
+
+      test("dao.findByEmail deve lançar um erro", async () => {
+         const usuario = {};
+
+         const error = { error: "BD FIND BY EMAIL" };
+         jest.spyOn(dao, dao.findByEmail.name).mockImplementation(() => {
+            throw error;
+         });
+
+         const expectedError = error;
+         const create = async () => await service.create(usuario);
+
+         await expect(create).rejects.toEqual(expectedError);
       });
 
       test("cache.removerDados deve lancar um erro", async () => {
