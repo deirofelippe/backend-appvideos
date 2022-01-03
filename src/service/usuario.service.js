@@ -16,8 +16,17 @@ async function findAll() {
 }
 
 async function create(usuario) {
-   const existeEmail = await dao.findByEmail(usuario.email);
-   if (existeEmail) throw montarError(401, { email: ["Email já existente"] });
+   let existeEmail;
+
+   try {
+      existeEmail = await dao.findByEmail(usuario.email);
+   } catch (error) {
+      throw error;
+   }
+
+   if (existeEmail) {
+      throw montarError(401, { email: ["Email já existente"] });
+   }
 
    usuario.id = uuid.v4();
 
