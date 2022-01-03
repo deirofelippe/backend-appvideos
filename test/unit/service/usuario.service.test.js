@@ -127,25 +127,6 @@ describe("usuario.service", () => {
          await expect(create).rejects.toEqual(expectedError);
       });
 
-      test("cache.removerDados deve lancar um erro", async () => {
-         const usuario = usuarioFactory()[0];
-
-         const error = { error: "CACHE" };
-         jest.spyOn(dao, dao.findByEmail.name).mockResolvedValue(false);
-         jest.spyOn(dao, dao.create.name).mockResolvedValue(usuario);
-         jest
-            .spyOn(cache, cache.removerDadosNaCache.name)
-            .mockImplementation(() => {
-               throw error;
-            });
-
-         const expectedError = error;
-         const create = async () => await service.create(usuario);
-
-         await expect(create).rejects.toEqual(expectedError);
-         expect(dao.create).toHaveBeenCalledTimes(1);
-      });
-
       test("Deve passa no teste e retornar um usuario", async () => {
          const bcrypt = require("bcrypt");
 
@@ -179,6 +160,7 @@ describe("usuario.service", () => {
          expect(cache.removerDadosNaCache).toHaveBeenCalledWith("usuarios");
          expect(result.createdAt).toBeDefined();
          expect(result.updatedAt).toBeDefined();
+         expect(result.senha).toBeUndefined();
       });
    });
 });
