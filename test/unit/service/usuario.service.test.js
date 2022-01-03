@@ -46,7 +46,16 @@ describe("usuario.service", () => {
          await expect(findAll).rejects.toEqual(expectedError);
       });
 
-      test.todo("Deve ser retornado array vazio no dao.findAll");
+      test("Não deve ser retornado usuario no dao.findAll", async () => {
+         jest
+            .spyOn(cache, cache.buscarDadosNaCache.name)
+            .mockResolvedValue(false);
+
+         jest.spyOn(dao, dao.findAll.name).mockResolvedValue([]);
+
+         const result = await service.findAll();
+         expect(result).toHaveLength(0);
+      });
 
       test.todo("Não deve ser retornado array vazio no dao.findAll");
    });
