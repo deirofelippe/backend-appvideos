@@ -9,6 +9,28 @@ const uuid = require("uuid");
 jest.mock("uuid");
 
 describe("usuario.service", () => {
+   describe("#findAll", () => {
+      test.only("Deve retornar os usuarios em cache", async () => {
+         const usuarios = usuarioFactory(3);
+
+         jest.spyOn(dao, dao.findAll.name);
+         jest
+            .spyOn(cache, cache.buscarDadosNaCache.name)
+            .mockResolvedValue(usuarios);
+
+         const result = await service.findAll();
+
+         expect(result).toHaveLength(3);
+         expect(dao.findAll).toHaveBeenCalledTimes(0);
+      });
+
+      test.todo("Deve ser lançado um erro no dao.findAll");
+
+      test.todo("Deve ser retornado array vazio no dao.findAll");
+
+      test.todo("Não deve ser retornado array vazio no dao.findAll");
+   });
+
    describe("#create", () => {
       beforeEach(() => {
          jest.restoreAllMocks();
