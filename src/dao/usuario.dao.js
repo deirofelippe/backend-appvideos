@@ -1,11 +1,13 @@
 const model = require("../models/usuario.js");
 const logger = require("../logger.js");
+const montarError = require("../utils/montarError.js");
 
 const formatarRetorno = (result) => result?.dataValues;
 
 async function findAll() {
    try {
       const results = await model.findAll();
+
       const usuarios = results.map(formatarRetorno);
 
       logger.info("Usuarios buscados: " + JSON.stringify(result));
@@ -23,8 +25,8 @@ async function create(usuario) {
       logger.info("Usuario adicionado: " + JSON.stringify(result));
       return result.dataValues;
    } catch (error) {
-      logger.error(error);
-      return null;
+      logger.error("[ERRO NO BD, CREATE]: " + error);
+      throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
 
