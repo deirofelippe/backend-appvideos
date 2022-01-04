@@ -1,3 +1,7 @@
+require("dotenv").config();
+
+const apm = require("elastic-apm-node").start();
+
 const app = require("./app");
 const db = require("./database");
 const logger = require("./logger");
@@ -9,7 +13,7 @@ const PORT = process.env.API_PORT || 3000;
       await db.sync();
       logger.info("Database sync...");
 
-      app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+      app.listen(PORT, () => logger.info(`Server started on port ${PORT}`));
    } catch (error) {
       logger.error(error);
       await db.close();
