@@ -55,7 +55,7 @@ async function findById(id) {
    }
 }
 
-async function findToUpdate(id) {
+async function findByIdToUpdate(id) {
    try {
       const result = await model.findByPk(id);
 
@@ -71,7 +71,7 @@ async function findToUpdate(id) {
 
 async function update(novoUsuario) {
    try {
-      const usuario = await findToUpdate(novoUsuario.id);
+      const usuario = await findByIdToUpdate(novoUsuario.id);
       usuario.dataValues = { ...usuario.dataValues, ...novoUsuario };
       const result = await usuario.save();
 
