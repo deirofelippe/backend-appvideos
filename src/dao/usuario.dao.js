@@ -33,7 +33,7 @@ async function create(usuario) {
 
 async function findByEmail(email) {
    try {
-      const result = await model.findOne({ where: email });
+      const result = await model.findOne({ where: { email } });
 
       logger.info("Usuario buscado pelo email: " + JSON.stringify(result));
       return result?.dataValues;
