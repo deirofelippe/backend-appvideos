@@ -8,7 +8,7 @@ async function findAll() {
    try {
       const results = await model.findAll();
 
-      logger.info("Usuarios buscados: " + JSON.stringify(result));
+      logger.info("Usuarios buscados: " + JSON.stringify(results));
 
       if (!results) return results;
 
