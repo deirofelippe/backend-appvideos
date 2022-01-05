@@ -5,6 +5,7 @@ const {
    afterAll,
    beforeAll,
    afterEach,
+   beforeEach,
 } = require("@jest/globals");
 const connection = require("../../../src/database");
 const dao = require("../../../src/dao/usuario.dao.js");
@@ -18,11 +19,17 @@ jest.spyOn(logger, "info").mockImplementation();
 jest.spyOn(logger, "error").mockImplementation();
 
 describe("usuario.dao", () => {
+   beforeEach(async () => {
+      jest.resetAllMocks();
+      logger.info.mockImplementation();
+      logger.error.mockImplementation();
+   });
    afterEach(async () => await truncate(connection.models));
 
    beforeAll(async () => await connection.sync());
-
-   afterAll(async () => await connection.close());
+   afterAll(async () => {
+      await connection.close();
+   });
 
    const error = montarError(500, { msg: ["Algo deu errado!"] });
 
@@ -37,15 +44,6 @@ describe("usuario.dao", () => {
    test.todo("#findById Deve encontrar o usuario com o id procurado");
    test.todo("#findById Não deve encontrar o usuario com o id procurado");
    test.todo("#findById Deve lancar um erro");
-
-   test.todo("#findByIdToUpdate Deve encontrar o usuario com o id procurado");
-   test.todo("#findByIdToUpdate Deve lancar um erro");
-
-   test.todo("#update Deve atualizar o usuario");
-   test.todo("#update Deve lancar um erro");
-
-   test.todo("#remove Deve remover o usuario");
-   test.todo("#remove Deve lancar um erro");
 
    describe("#create", () => {
       test("Deve criar o usuario e retornar", async () => {
@@ -120,20 +118,50 @@ describe("usuario.dao", () => {
    });
 
    describe("#update", () => {
-      test("", async () => {
-         const usuario = usuarioFactory();
-         await dao.create(usuario);
+      jest.spyOn(model, model.findByPk.name);
 
-         const novoUsuario = { ...usuario, nome: "abc" };
-         const usuarioAtualizado = await dao.update(novoUsuario);
+      test("Deve atualizar o usuario", async () => {
+         const usuario = usuarioFactory()[0];
+         const usuarioModel = await model.create(usuario);
 
-         expect(usuarioAtualizado).toEqual(
-            expect.objectContaining(novoUsuario)
-         );
+         const { senha, ...usuarioPraAtualizar } = usuario;
+
+         const faker = require("faker");
+         const novoNome = faker.name.findName();
+         const novoEmail = faker.internet.email();
+         usuarioPraAtualizar.nome = novoNome;
+         usuarioPraAtualizar.email = novoEmail;
+
+         model.findByPk.mockResolvedValue(usuarioModel);
+
+         const usuarioAtualizado = await dao.update(usuarioPraAtualizar);
+
+         expect(usuarioAtualizado.nome).toEqual(novoNome);
+         expect(usuarioAtualizado.email).toEqual(novoEmail);
+      });
+
+      test("Deve lancar um erro", async () => {
+         const usuario = usuarioFactory()[0];
+         const usuarioModel = await model.create(usuario);
+
+         usuarioModel.save = jest.fn().mockImplementation(() => {
+            throw "error";
+         });
+
+         model.findByPk.mockResolvedValue(usuarioModel);
+
+         const expectedError = error;
+
+         const update = async () => await dao.update(usuario);
+
+         await expect(update).rejects.toEqual(expectedError);
       });
    });
 
    describe("#remove", () => {
+      test.todo("#remove Deve remover o usuario");
+      test.todo("#remove Deve lancar um erro");
+
       test("", async () => {
          const usuario = usuarioFactory();
          await dao.create(usuario);
