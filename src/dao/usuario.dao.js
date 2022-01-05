@@ -39,7 +39,7 @@ async function findByEmail(email) {
       return result?.dataValues;
    } catch (error) {
       logger.error(error);
-      return montarError(500, { msg: ["Algo deu errado!"] });
+      throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
 
@@ -51,7 +51,7 @@ async function findByCPF(cpf) {
       return result?.dataValues;
    } catch (error) {
       logger.error(error);
-      return montarError(500, { msg: ["Algo deu errado!"] });
+      throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
 
@@ -70,9 +70,7 @@ async function findById(id) {
 async function update(novoUsuario) {
    try {
       const usuario = await model.findByPk(novoUsuario.id);
-      logger.info(
-         "Usuario buscado para ser atualizado: " + JSON.stringify(usuario)
-      );
+      logger.info("Usuario buscado para ser atualizado");
 
       usuario.dataValues = { ...usuario.dataValues, ...novoUsuario };
       const result = await usuario.save();
@@ -80,8 +78,8 @@ async function update(novoUsuario) {
       logger.info("Usuario atualizado: " + JSON.stringify(result));
       return result.dataValues;
    } catch (error) {
-      logger.error(error);
-      return null;
+      logger.error(novoUsuario);
+      throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
 
