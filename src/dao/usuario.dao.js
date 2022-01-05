@@ -43,6 +43,18 @@ async function findByEmail(email) {
    }
 }
 
+async function findByCPF(cpf) {
+   try {
+      const result = await model.findOne({ where: { cpf } });
+
+      logger.info("Usuario buscado pelo CPF: " + JSON.stringify(result));
+      return result?.dataValues;
+   } catch (error) {
+      logger.error(error);
+      return montarError(500, { msg: ["Algo deu errado!"] });
+   }
+}
+
 async function findById(id) {
    try {
       const result = await model.findByPk(id);
@@ -100,6 +112,7 @@ module.exports = {
    update,
    findById,
    findByEmail,
+   findByCPF,
    findAll,
    create,
 };
