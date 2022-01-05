@@ -60,10 +60,8 @@ describe("usuario.dao", () => {
       test("Deve lancar um erro", async () => {
          const usuario = usuarioFactory()[0];
 
-         const error = montarError(500, { msg: ["Algo deu errado!"] });
-
-         jest.spyOn(dao, dao.create.name).mockImplementation(() => {
-            throw error;
+         jest.spyOn(model, model.create.name).mockImplementation(() => {
+            throw "";
          });
 
          const expectedError = error;
