@@ -159,18 +159,37 @@ describe("usuario.dao", () => {
    });
 
    describe("#remove", () => {
-      test.todo("#remove Deve remover o usuario");
-      test.todo("#remove Deve lancar um erro");
+      test("Deve remover o usuario", async () => {
+         const expectedList1 = await dao.findAll();
 
-      test("", async () => {
-         const usuario = usuarioFactory();
-         await dao.create(usuario);
-         let result = await dao.findAll();
-         expect(result).toHaveLength(1);
+         expect(expectedList1).toHaveLength(0);
+
+         const usuario = usuarioFactory()[0];
+         await model.create(usuario);
+         const expectedList2 = await dao.findAll();
+
+         expect(expectedList2).toHaveLength(1);
 
          await dao.remove(usuario.id);
-         result = await dao.findAll();
-         expect(result).toHaveLength(0);
+         const expectedList3 = await dao.findAll();
+
+         expect(expectedList3).toHaveLength(0);
+      });
+
+      test("Deve lancar um erro", async () => {
+         const usuario = { id: "" };
+
+         jest.spyOn(model, model.destroy.name).mockImplementation(() => {
+            throw "error";
+         });
+
+         const remove = async () => await dao.remove(usuario.id);
+
+         const expectedError = error;
+
+         await expect(remove).rejects.toEqual(expectedError);
+
+         model.destroy.mockRestore();
       });
    });
 });
