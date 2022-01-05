@@ -10,7 +10,7 @@ const redis = new Redis({
 async function buscarDadosNaCache(chave) {
    try {
       const result = await redis.get(chave);
-      return result || JSON.parse(result);
+      return result && JSON.parse(result);
    } catch (error) {
       logger.error("[ERRO NA CACHE, BUSCAR]: " + error);
       return null;
