@@ -2,15 +2,18 @@ const {
    describe,
    test,
    expect,
+   beforeEach,
    beforeAll,
    afterEach,
 } = require("@jest/globals");
 const faker = require("faker");
 const validarUsuario = require("../../../src/validacao/usuario.validacao.js");
 const logger = require("../../../src/logger.js");
+const dao = require("../../../src/dao/usuario.dao.js");
 const usuarioFactory = require("../../usuarioFactory.js");
 
-beforeAll(() => jest.spyOn(logger, "error").mockImplementation());
+jest.spyOn(logger, "error").mockImplementation();
+jest.spyOn(logger, "info").mockImplementation();
 
 describe("Validação de usuário", () => {
    describe("#validarUsuario", () => {
@@ -29,9 +32,17 @@ describe("Validação de usuário", () => {
          errors: {},
       };
 
-      afterEach(() => {
+      beforeAll(() => {
+         jest.spyOn(dao, dao.findByCPF.name).mockResolvedValue(undefined);
+         jest.spyOn(dao, dao.findByEmail.name).mockResolvedValue(undefined);
+      });
+
+      beforeEach(() => {
          req.body = {};
          expectedError.errors = {};
+
+         dao.findByCPF.mockReset().mockResolvedValue(undefined);
+         dao.findByEmail.mockReset().mockResolvedValue(undefined);
       });
 
       test("Campos devem ser preenchidos: email, nome, senha e cpf", async () => {
@@ -136,6 +147,32 @@ describe("Validação de usuário", () => {
          expect(res.status().send).toHaveBeenCalledWith(expectedError);
       });
 
+      test("Email e CPF ainda não foram cadastrados", async () => {
+         const usuario = usuarioFactory()[0];
+         req.body = {
+            ...usuario,
+         };
+
+         await validarUsuario(req, res, next);
+
+         expect(next).toHaveBeenCalledTimes(1);
+      });
+
+      test("Email já foi cadastrado", async () => {
+         const usuario = usuarioFactory()[0];
+         req.body = {
+            ...usuario,
+         };
+
+         dao.findByEmail.mockReset().mockResolvedValue(usuario);
+
+         await validarUsuario(req, res, next);
+
+         expectedError.errors.email = ["Email já existe"];
+
+         expect(res.status().send).toHaveBeenCalledWith(expectedError);
+      });
+
       test("Email é inválido", async () => {
          const { id, ...usuario } = usuarioFactory()[0];
          req.body = {
@@ -181,6 +218,21 @@ describe("Validação de usuário", () => {
          expect(res.status().send).toHaveBeenCalledWith(expectedError);
       });
 
+      test("CPF já foi cadastrado", async () => {
+         const usuario = usuarioFactory()[0];
+         req.body = {
+            ...usuario,
+         };
+
+         dao.findByCPF.mockReset().mockResolvedValue(usuario);
+
+         await validarUsuario(req, res, next);
+
+         expectedError.errors.cpf = ["CPF já existe"];
+
+         expect(res.status().send).toHaveBeenCalledWith(expectedError);
+      });
+
       test("CPF deve ser preenchido", async () => {
          const usuario = usuarioFactory()[0];
          req.body = {
@@ -197,23 +249,6 @@ describe("Validação de usuário", () => {
          ];
 
          expect(res.status().send).toHaveBeenCalledWith(expectedError);
-      });
-
-      test("CPF é válido nos formatos com e sem caracteres especiais", async () => {
-         const usuario = usuarioFactory()[0];
-         req.body = {
-            ...usuario,
-         };
-
-         req.body.cpf = "31286578078";
-         await validarUsuario(req, res, next);
-
-         expect(next).toHaveBeenCalledTimes(1);
-
-         req.body.cpf = "312.865.780-78";
-         await validarUsuario(req, res, next);
-
-         expect(next).toHaveBeenCalledTimes(2);
       });
 
       test("CPF é inválido", async () => {
