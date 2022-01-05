@@ -67,28 +67,18 @@ async function findById(id) {
    }
 }
 
-async function findByIdToUpdate(id) {
-   try {
-      const result = await model.findByPk(id);
-
-      logger.info(
-         "Usuario buscado para ser atualizado: " + JSON.stringify(result)
-      );
-      return result;
-   } catch (error) {
-      logger.error(error);
-      return null;
-   }
-}
-
 async function update(novoUsuario) {
    try {
-      const usuario = await findByIdToUpdate(novoUsuario.id);
+      const usuario = await model.findByPk(novoUsuario.id);
+      logger.info(
+         "Usuario buscado para ser atualizado: " + JSON.stringify(usuario)
+      );
+
       usuario.dataValues = { ...usuario.dataValues, ...novoUsuario };
       const result = await usuario.save();
 
       logger.info("Usuario atualizado: " + JSON.stringify(result));
-      return result;
+      return result.dataValues;
    } catch (error) {
       logger.error(error);
       return null;
