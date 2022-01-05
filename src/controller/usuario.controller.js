@@ -1,5 +1,6 @@
 const logger = require("../logger.js");
 const service = require("../service/usuario.service.js");
+const usuarioFactory = require("../../test/usuarioFactory.js");
 
 async function findAll(req, res) {
    try {
@@ -12,11 +13,14 @@ async function findAll(req, res) {
 }
 
 async function create(req, res) {
+   const u = usuarioFactory()[0];
+   if (req.body?.random === "1") req.body = { ...u };
+
    try {
       const result = await service.create(req.body);
       res.status(200).json(result);
    } catch ({ status, errors }) {
-      res.status(status).json(errors);
+      res.status(status).json({ errors });
    }
 }
 
