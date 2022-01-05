@@ -27,7 +27,7 @@ async function gravarDadosNaCache(chave, valor) {
 
 async function removerDadosNaCache(chave) {
    try {
-      redis.set(chave, "");
+      await redis.set(chave, "");
    } catch (error) {
       logger.error("[ERRO NA CACHE, REMOVER]: " + error);
    }
