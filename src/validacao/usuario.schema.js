@@ -2,6 +2,7 @@ const yup = require("yup");
 const { cpf } = require("cpf-cnpj-validator");
 const { setLocale } = require("yup");
 const dao = require("../dao/usuario.dao.js");
+const tirarFormatacaoDoCPF = require("./utils.js");
 
 setLocale({
    string: {
@@ -18,7 +19,9 @@ setLocale({
 const cpfPodeSerUsado = async (cpfEnviado) => {
    if (!cpfEnviado) return true;
 
-   const encontrouCPF = await dao.findByCPF(cpfEnviado);
+   const cpf = tirarFormatacaoDoCPF(cpfEnviado);
+
+   const encontrouCPF = await dao.findByCPF(cpf);
 
    let liberadoPraUso;
 
