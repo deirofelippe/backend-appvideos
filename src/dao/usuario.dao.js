@@ -14,7 +14,7 @@ async function findAll() {
 
       return results.map(formatarRetorno);
    } catch (error) {
-      logger.error(error);
+      logger.error("[ERRO NO BD, FIND ALL]: " + error);
       throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
@@ -38,7 +38,7 @@ async function findByEmail(email) {
       logger.info("Usuario buscado pelo email: " + JSON.stringify(result));
       return result?.dataValues;
    } catch (error) {
-      logger.error(error);
+      logger.error("[ERRO NO BD, FIND BY EMAIL]: " + error);
       throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
@@ -50,7 +50,7 @@ async function findByCPF(cpf) {
       logger.info("Usuario buscado pelo CPF: " + JSON.stringify(result));
       return result?.dataValues;
    } catch (error) {
-      logger.error(error);
+      logger.error("[ERRO NO BD, FIND BY CPF]: " + error);
       throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
@@ -62,7 +62,7 @@ async function findById(id) {
       logger.info("Usuario buscado: " + JSON.stringify(result));
       return result?.dataValues;
    } catch (error) {
-      logger.error(error);
+      logger.error("[ERRO NO BD, FIND BY ID]: " + error);
       throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
@@ -78,7 +78,7 @@ async function update(novoUsuario) {
       logger.info("Usuario atualizado: " + JSON.stringify(result));
       return result.dataValues;
    } catch (error) {
-      logger.error(error);
+      logger.error("[ERRO NO BD, UPDATE]: " + error);
       throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
@@ -90,7 +90,7 @@ async function remove(id) {
       logger.info("Usuario removido: " + JSON.stringify(result));
       return result;
    } catch (error) {
-      logger.error(error);
+      logger.error("[ERRO NO BD, REMOVE]: " + error);
       throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
