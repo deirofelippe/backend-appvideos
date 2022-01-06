@@ -9,11 +9,11 @@ const uuid = require("uuid");
 jest.mock("uuid");
 
 describe("usuario.service", () => {
-   describe("#findAll", () => {
-      beforeEach(() => {
-         jest.restoreAllMocks();
-      });
+   beforeEach(() => {
+      jest.restoreAllMocks();
+   });
 
+   describe("#findAll", () => {
       test("Deve retornar os usuarios em cache", async () => {
          const usuarios = usuarioFactory(3);
 
@@ -78,25 +78,6 @@ describe("usuario.service", () => {
    });
 
    describe("#create", () => {
-      beforeEach(() => {
-         jest.restoreAllMocks();
-      });
-
-      test("Email já existente, deve lançar um erro", async () => {
-         jest.spyOn(dao, dao.findByEmail.name).mockResolvedValue(true);
-
-         const usuario = {};
-
-         const expectedError = montarError(401, {
-            email: ["Email já existente"],
-         });
-
-         const create = async () => await service.create(usuario);
-
-         await expect(create).rejects.toEqual(expectedError);
-         expect(dao.findByEmail).toHaveBeenCalledTimes(1);
-      });
-
       test("dao.create deve lançar um erro", async () => {
          const usuario = usuarioFactory()[0];
 
@@ -111,20 +92,6 @@ describe("usuario.service", () => {
 
          await expect(create).rejects.toEqual(expectedError);
          expect(dao.create).toHaveBeenCalledTimes(1);
-      });
-
-      test("dao.findByEmail deve lançar um erro", async () => {
-         const usuario = {};
-
-         const error = { error: "BD FIND BY EMAIL" };
-         jest.spyOn(dao, dao.findByEmail.name).mockImplementation(() => {
-            throw error;
-         });
-
-         const expectedError = error;
-         const create = async () => await service.create(usuario);
-
-         await expect(create).rejects.toEqual(expectedError);
       });
 
       test("Deve passa no teste e retornar um usuario", async () => {
