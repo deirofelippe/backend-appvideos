@@ -57,13 +57,13 @@ async function findByCPF(cpf) {
 
 async function findById(id) {
    try {
-      const result = await model.findByPk(id);
+      const result = await model.findOne({ where: { id } });
 
       logger.info("Usuario buscado: " + JSON.stringify(result));
       return result?.dataValues;
    } catch (error) {
       logger.error(error);
-      return null;
+      throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
 
@@ -78,7 +78,7 @@ async function update(novoUsuario) {
       logger.info("Usuario atualizado: " + JSON.stringify(result));
       return result.dataValues;
    } catch (error) {
-      logger.error(novoUsuario);
+      logger.error(error);
       throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
@@ -91,7 +91,7 @@ async function remove(id) {
       return result;
    } catch (error) {
       logger.error(error);
-      return null;
+      throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
 
