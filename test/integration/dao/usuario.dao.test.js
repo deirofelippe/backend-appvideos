@@ -5,31 +5,24 @@ const {
    afterAll,
    beforeAll,
    afterEach,
-   beforeEach,
 } = require("@jest/globals");
 const connection = require("../../../src/database");
 const dao = require("../../../src/dao/usuario.dao.js");
 const usuarioFactory = require("../../usuarioFactory.js");
-const logger = require("../../../src/logger.js");
 const model = require("../../../src/models/usuario.js");
 const montarError = require("../../../src/utils/montarError");
 const truncate = require("../../truncate.js");
 
-jest.spyOn(logger, "info").mockImplementation();
-jest.spyOn(logger, "error").mockImplementation();
+jest.mock("../../../src/logger.js");
 
 describe("usuario.dao", () => {
-   beforeEach(async () => {
-      jest.resetAllMocks();
-      logger.info.mockImplementation();
-      logger.error.mockImplementation();
+   afterEach(async () => {
+      jest.restoreAllMocks();
+      await truncate(connection.models);
    });
-   afterEach(async () => await truncate(connection.models));
 
    beforeAll(async () => await connection.sync());
-   afterAll(async () => {
-      await connection.close();
-   });
+   afterAll(async () => await connection.close());
 
    const error = montarError(500, { msg: ["Algo deu errado!"] });
 
@@ -40,10 +33,6 @@ describe("usuario.dao", () => {
    test.todo("#findByCPF Deve encontrar o usuario com o cpf procurado");
    test.todo("#findByCPF Não deve encontrar o usuario com o cpf procurado");
    test.todo("#findByCPF Deve lancar um erro");
-
-   test.todo("#findById Deve encontrar o usuario com o id procurado");
-   test.todo("#findById Não deve encontrar o usuario com o id procurado");
-   test.todo("#findById Deve lancar um erro");
 
    describe("#create", () => {
       test("Deve criar o usuario e retornar", async () => {
@@ -106,20 +95,39 @@ describe("usuario.dao", () => {
    });
 
    describe("#findById", () => {
-      test("", async () => {
-         const usuarioEsperado = usuarioFactory();
-         await dao.create(usuarioEsperado);
-         await dao.create(usuarioFactory());
+      test("Deve encontrar o usuario com o id procurado", async () => {
+         const usuario = usuarioFactory()[0];
+         await model.create(usuario);
 
-         const usuario = await dao.findById(usuarioEsperado.id);
+         const { createdAt, updatedAt, ...usuarioBuscado } = await dao.findById(
+            usuario.id
+         );
 
-         expect(usuario).toEqual(expect.objectContaining(usuarioEsperado));
+         expect(usuarioBuscado).toEqual(usuario);
+      });
+
+      test("Não deve encontrar o usuario com o id procurado", async () => {
+         const usuario = usuarioFactory()[0];
+         jest.spyOn(model, model.findOne.name).mockResolvedValue(undefined);
+         const result = await dao.findById(usuario.id);
+         expect(result).toBeUndefined();
+      });
+
+      test("Deve lancar um erro", async () => {
+         jest.spyOn(model, model.findOne.name).mockImplementation(() => {
+            throw "error";
+         });
+
+         const expectedError = error;
+
+         const id = "";
+         const findById = async () => await dao.findById(id);
+
+         await expect(findById).rejects.toEqual(expectedError);
       });
    });
 
    describe("#update", () => {
-      jest.spyOn(model, model.findByPk.name);
-
       test("Deve atualizar o usuario", async () => {
          const usuario = usuarioFactory()[0];
          const usuarioModel = await model.create(usuario);
@@ -132,7 +140,7 @@ describe("usuario.dao", () => {
          usuarioPraAtualizar.nome = novoNome;
          usuarioPraAtualizar.email = novoEmail;
 
-         model.findByPk.mockResolvedValue(usuarioModel);
+         jest.spyOn(model, model.findByPk.name).mockResolvedValue(usuarioModel);
 
          const usuarioAtualizado = await dao.update(usuarioPraAtualizar);
 
@@ -148,7 +156,7 @@ describe("usuario.dao", () => {
             throw "error";
          });
 
-         model.findByPk.mockResolvedValue(usuarioModel);
+         jest.spyOn(model, model.findByPk.name).mockResolvedValue(usuarioModel);
 
          const expectedError = error;
 
@@ -188,8 +196,6 @@ describe("usuario.dao", () => {
          const expectedError = error;
 
          await expect(remove).rejects.toEqual(expectedError);
-
-         model.destroy.mockRestore();
       });
    });
 });
