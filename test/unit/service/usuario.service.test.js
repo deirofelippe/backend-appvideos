@@ -161,7 +161,7 @@ describe("usuario.service", () => {
       });
    });
 
-   describe("#update", () => {
+   describe.only("#update", () => {
       test("Deve lançar um erro (BD ou achou cpf) em verificarSePodeUsarCPF", async () => {
          const usuario = usuarioFactory()[0];
 
