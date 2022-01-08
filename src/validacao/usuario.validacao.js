@@ -23,6 +23,7 @@ async function validarUsuario(req, res, next) {
 
 function montarMensagemDeErro({ inner: errors }) {
    let campo = {};
+   let descricaoError = "";
 
    const errorsMsg = errors.reduce((msg, error) => {
       campo = error.path;
