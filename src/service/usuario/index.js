@@ -1,19 +1,15 @@
-const dao = require("../dao/usuario.dao.js");
+const dao = require("../../dao/usuario.dao.js");
 const uuid = require("uuid");
 const bcrypt = require("bcrypt");
-const cache = require("../cache");
-const montarError = require("../utils/montarError.js");
+const cache = require("../../cache");
+const montarError = require("../../utils/montarError.js");
+const update = require("./update.js");
 
 async function findAll() {
    const temUsuarioNaCache = await cache.buscarDadosNaCache("usuarios");
    if (temUsuarioNaCache) return temUsuarioNaCache;
 
-   let usuarios;
-   try {
-      usuarios = await dao.findAll();
-   } catch (error) {
-      throw error;
-   }
+   const usuarios = await dao.findAll();
 
    if (!usuarios) return usuarios;
 
@@ -22,13 +18,7 @@ async function findAll() {
 }
 
 async function create(usuario) {
-   let existeEmail;
-
-   try {
-      existeEmail = await dao.findByEmail(usuario.email);
-   } catch (error) {
-      throw error;
-   }
+   const existeEmail = await dao.findByEmail(usuario.email);
 
    if (existeEmail) {
       throw montarError(401, { email: ["Email já existente"] });
@@ -40,13 +30,8 @@ async function create(usuario) {
    const senhaHash = await bcrypt.hash(usuario.senha, salt);
    usuario.senha = senhaHash;
 
-   let result;
-   try {
-      result = await dao.create(usuario);
-      delete result.senha;
-   } catch (error) {
-      throw error;
-   }
+   const result = await dao.create(usuario);
+   delete result.senha;
 
    await cache.removerDadosNaCache("usuarios");
 
@@ -56,4 +41,5 @@ async function create(usuario) {
 module.exports = {
    findAll,
    create,
+   update: async (usuario) => await update(usuario),
 };
