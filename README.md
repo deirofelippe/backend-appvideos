@@ -1,3 +1,32 @@
+#
+
+## Checklist
+
+Usuario: id, email, password, nome
+
+Vídeo: id_usuario, id, titulo, url, descricao
+
+-  frontend: handlebars
+-  outros servicos usados: kafka, s3, terraform, k8s, pagseguro
+-  middleware: estaAutenticado, estaAutorizado, estaValidado
+-  service: se atualizar o cpf ou email, tem q verificar se outra pessoa que n seja ela mesma esteja usando
+
+## Docker Composer
+
+O docker compose usa uma rede externa já criada, ao invés de ele criar, então é preciso criar uma rede. O mesmo serve pro volume do mysql.
+
+-  `docker create network --diver bridge appvideos`
+-  `docker volume create --name=v_mysql`
+
+**Espere terminar a criação dos containers de daca arquivo para executar os outros arquivos**
+
+Ordem de execução:
+
+1. docker-compose up -d
+1. docker-compose -f ./docker-compose.elastic.yaml up -d
+
+## Comandos usados
+
 npx express-generator
 npx sequelize-cli init
 
@@ -9,34 +38,3 @@ docker-compose -f compose-db.yaml up -d
 docker-compose -f compose-db.yaml down
 docker-compose -f compose-db.yaml logs -f mysql
 docker-compose -f compose-db.yaml logs -f phpmyadmin
-
-## Checklist
-
-Usuario: id, email, password, nome,
-Vídeo: id_usuario, id, titulo, url, descricao
-
-Usuarios
-
--  create
-   -  campos validos
-   -  nao existe o email
--  update
-   -  campos validos
-   -  id é o mesmo
-   -  se email for igual, entao tem que ser do proprio usuario
-   -  se email for diferente, so aceita se nao existir
--  read
--  delete
-   -  se id for igual
--  login
-   -  email e senha sao iguais
-
-jest, handlebars, hamlet, passport,jwt, bcrypt, aws
-
--  [ ] usuario: controller, service, dao, models
--  [ ] usuario: validacao
--  [ ] usuario: crud
--  [ ] middleware: estaAutenticado, estaAutorizado, estaValidado
--  [ ] unit test: validacao, autorizacao, autenticacao, service, dao, erros, middleware,
--  [ ] integration test: request, banco de dados, request e banco de dados
-       segredos de salao decapagem de cabelo saiba o que e como fazer o servico e manter a cor nos fios

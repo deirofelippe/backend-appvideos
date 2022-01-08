@@ -43,6 +43,7 @@
     "faker": "^5.5.3",
     "jest": "^27.4.5",
     "nodemon": "^2.0.15",
+    "rewire": "^6.0.0",
     "sequelize-cli": "^6.3.0",
     "sqlite3": "^5.0.2",
     "supertest": "^6.1.6"
