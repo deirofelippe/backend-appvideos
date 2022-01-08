@@ -4,7 +4,7 @@ const cache = require("../../../../src/cache");
 const service = require("../../../../src/service/usuario");
 const dao = require("../../../../src/dao/usuario.dao.js");
 
-describe("usuario.service", () => {
+describe("service.usuario", () => {
    beforeEach(() => {
       jest.restoreAllMocks();
    });

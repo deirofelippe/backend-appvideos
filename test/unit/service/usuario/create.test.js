@@ -9,7 +9,7 @@ const uuid = require("uuid");
 jest.mock("uuid");
 uuid.v4.mockReturnValue("001");
 
-describe("usuario.service", () => {
+describe("service.usuario", () => {
    beforeEach(() => {
       jest.restoreAllMocks();
    });
