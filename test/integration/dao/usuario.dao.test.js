@@ -26,9 +26,37 @@ describe("usuario.dao", () => {
 
    const error = montarError(500, { msg: ["Algo deu errado!"] });
 
-   test.todo("#findByEmail Deve encontrar o usuario com o email procurado");
-   test.todo("#findByEmail Não deve encontrar o usuario com o email procurado");
-   test.todo("#findByEmail Deve lancar um erro");
+   describe("#findByCPF", () => {
+      test("Deve encontrar o usuario com o cpf procurado", async () => {
+         const usuario = usuarioFactory()[0];
+
+         await model.create(usuario);
+         const { createdAt, updatedAt, ...result } = await dao.findByCPF(
+            usuario.cpf
+         );
+
+         expect(result).toEqual(usuario);
+      });
+
+      test("Não deve encontrar o usuario com o cpf procurado", async () => {
+         const { cpf } = usuarioFactory()[0];
+         const result = await dao.findByCPF(cpf);
+
+         expect(result).toEqual(undefined);
+      });
+
+      test("Deve lancar um erro", async () => {
+         const cpf = "";
+
+         jest.spyOn(model, model.findOne.name).mockImplementation(() => {
+            throw error;
+         });
+
+         const findByCPF = async () => await dao.findByCPF(cpf);
+
+         await expect(findByCPF).rejects.toEqual(error);
+      });
+   });
 
    describe("#findByEmail", () => {
       test("Deve encontrar o usuario com o email procurado", async () => {
