@@ -166,7 +166,7 @@ describe("usuario.dao", () => {
       });
    });
 
-   describe("#remove", () => {
+   describe.only("#remove", () => {
       test("Deve remover o usuario", async () => {
          const expectedList1 = await dao.findAll();
 
@@ -178,9 +178,10 @@ describe("usuario.dao", () => {
 
          expect(expectedList2).toHaveLength(1);
 
-         await dao.remove(usuario.id);
+         const result = await dao.remove(usuario.id);
          const expectedList3 = await dao.findAll();
 
+         expect(result).toBeTruthy();
          expect(expectedList3).toHaveLength(0);
       });
 
