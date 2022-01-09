@@ -30,9 +30,36 @@ describe("usuario.dao", () => {
    test.todo("#findByEmail Não deve encontrar o usuario com o email procurado");
    test.todo("#findByEmail Deve lancar um erro");
 
-   test.todo("#findByCPF Deve encontrar o usuario com o cpf procurado");
-   test.todo("#findByCPF Não deve encontrar o usuario com o cpf procurado");
-   test.todo("#findByCPF Deve lancar um erro");
+   describe("#findByEmail", () => {
+      test("Deve encontrar o usuario com o email procurado", async () => {
+         const usuario = usuarioFactory()[0];
+
+         await model.create(usuario);
+         const { createdAt, updatedAt, ...result } = await dao.findByEmail(
+            usuario.email
+         );
+
+         expect(result).toEqual(usuario);
+      });
+      test("Não deve encontrar o usuario com o email procurado", async () => {
+         const { email } = usuarioFactory()[0];
+
+         const result = await dao.findByEmail(email);
+
+         expect(result).toEqual(undefined);
+      });
+      test("Deve lancar um erro", async () => {
+         const email = "";
+
+         jest.spyOn(model, model.findOne.name).mockImplementation(() => {
+            throw error;
+         });
+
+         const findByEmail = async () => await dao.findByEmail(email);
+
+         await expect(findByEmail).rejects.toEqual(error);
+      });
+   });
 
    describe("#create", () => {
       test("Deve criar o usuario e retornar", async () => {
@@ -166,7 +193,7 @@ describe("usuario.dao", () => {
       });
    });
 
-   describe.only("#remove", () => {
+   describe("#remove", () => {
       test("Deve remover o usuario", async () => {
          const expectedList1 = await dao.findAll();
 
