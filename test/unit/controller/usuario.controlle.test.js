@@ -57,4 +57,32 @@ describe("controller.usuario", () => {
          expect(res.status).toHaveBeenCalledWith(status);
       });
    });
+
+   describe("#create", () => {
+      test("Deve retornar usuario criado", async () => {
+         const usuario = { nome: "abc" };
+
+         jest.spyOn(service, service.create.name).mockResolvedValue(usuario);
+
+         await controller.create(req, res);
+
+         expect(res.status).toHaveBeenCalledWith(201);
+         expect(res.json).toHaveBeenCalledWith(usuario);
+      });
+
+      test("O service.create deve lançar um erro", async () => {
+         const error = montarError(400, { msg: ["algum erro no create"] });
+
+         jest.spyOn(service, service.create.name).mockImplementation(() => {
+            throw error;
+         });
+
+         await controller.create(req, res);
+
+         const { status, errors } = error;
+
+         expect(res.json).toHaveBeenCalledWith({ errors });
+         expect(res.status).toHaveBeenCalledWith(status);
+      });
+   });
 });
