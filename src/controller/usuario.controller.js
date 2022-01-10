@@ -5,9 +5,8 @@ async function findAll(req, res) {
    try {
       const result = await service.findAll();
       res.status(200).json(result);
-   } catch (error) {
-      const { status, errors } = error;
-      res.status(status).json(errors);
+   } catch ({ status, errors }) {
+      res.status(status).json({ errors });
    }
 }
 

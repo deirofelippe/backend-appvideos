@@ -53,7 +53,7 @@ describe("controller.usuario", () => {
 
          const { status, errors } = error;
 
-         expect(res.json).toHaveBeenCalledWith(errors);
+         expect(res.json).toHaveBeenCalledWith({ errors });
          expect(res.status).toHaveBeenCalledWith(status);
       });
    });
