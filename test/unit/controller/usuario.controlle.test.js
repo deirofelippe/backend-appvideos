@@ -113,4 +113,32 @@ describe("controller.usuario", () => {
          expect(res.status).toHaveBeenCalledWith(status);
       });
    });
+
+   describe.only("#remove", () => {
+      test("Deve retornar usuario atualizado", async () => {
+         const usuario = { nome: "abc" };
+
+         jest.spyOn(service, service.remove.name).mockResolvedValue(usuario);
+
+         await controller.remove(req, res);
+
+         expect(res.status).toHaveBeenCalledWith(204);
+         expect(res.json).toHaveBeenCalledWith(usuario);
+      });
+
+      test("O service.remove deve lançar um erro", async () => {
+         const error = montarError(400, { msg: ["algum erro no remove"] });
+
+         jest.spyOn(service, service.remove.name).mockImplementation(() => {
+            throw error;
+         });
+
+         await controller.remove(req, res);
+
+         const { status, errors } = error;
+
+         expect(res.json).toHaveBeenCalledWith({ errors });
+         expect(res.status).toHaveBeenCalledWith(status);
+      });
+   });
 });

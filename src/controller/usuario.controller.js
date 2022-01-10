@@ -31,8 +31,18 @@ async function update(req, res) {
    }
 }
 
+async function remove(req, res) {
+   try {
+      const result = await service.remove(req.body);
+      res.status(204).json(result);
+   } catch ({ status, errors }) {
+      res.status(status).json({ errors });
+   }
+}
+
 module.exports = {
    findAll,
    create,
    update,
+   remove,
 };
