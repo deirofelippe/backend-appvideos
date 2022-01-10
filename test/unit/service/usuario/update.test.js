@@ -177,16 +177,20 @@ describe("service.usuario", () => {
       test("Deve lançar um erro (BD ou achou cpf) em verificarSePodeUsarCPF", async () => {
          const usuario = usuarioFactory()[0];
 
-         const updateRewire = rewire(
+         const moduloUpdateRewire = rewire(
             "../../../../src/service/usuario/update.js"
          );
 
-         const error =
-            "error: cpf esta sendo usado por outro usuario pu erro no BD";
+         const error = "erro: buscar cpf";
+         const mock = {
+            verificarSePodeUsarCPF: jest.fn().mockImplementation(() => {
+               throw error;
+            }),
+            verificarSePodeUsarEmail: jest.fn(),
+         };
 
-         updateRewire.__set__("verificarSePodeUsarCPF", async () => {
-            throw error;
-         });
+         moduloUpdateRewire.__set__(mock);
+         const updateRewire = moduloUpdateRewire.__get__("update");
 
          jest
             .spyOn(service, service.update.name)
@@ -195,23 +199,34 @@ describe("service.usuario", () => {
          const update = async () => await service.update(usuario);
 
          await expect(update).rejects.toEqual(error);
+         expect(mock.verificarSePodeUsarCPF).toHaveBeenCalledTimes(1);
+         expect(mock.verificarSePodeUsarCPF).toHaveBeenCalledWith(
+            usuario.id,
+            usuario.cpf
+         );
+         expect(mock.verificarSePodeUsarEmail).toHaveBeenCalledTimes(0);
       });
 
       test("Deve lançar um erro (BD ou achou email) em verificarSePodeUsarEmail", async () => {
          const usuario = usuarioFactory()[0];
 
-         const updateRewire = rewire(
+         const moduloUpdateRewire = rewire(
             "../../../../src/service/usuario/update.js"
          );
 
-         updateRewire.__set__("verificarSePodeUsarCPF", async () => ({}));
+         const error = "erro: buscar email";
+         const mock = {
+            verificarSePodeUsarCPF: jest.fn(),
+            verificarSePodeUsarEmail: jest.fn().mockImplementation(() => {
+               throw error;
+            }),
+            dao: {
+               update: jest.fn(),
+            },
+         };
 
-         const error =
-            "error: email esta sendo usado por outro usuario pu erro no BD";
-
-         updateRewire.__set__("verificarSePodeUsarEmail", async () => {
-            throw error;
-         });
+         moduloUpdateRewire.__set__(mock);
+         const updateRewire = moduloUpdateRewire.__get__("update");
 
          jest
             .spyOn(service, service.update.name)
@@ -220,41 +235,81 @@ describe("service.usuario", () => {
          const update = async () => await service.update(usuario);
 
          await expect(update).rejects.toEqual(error);
+         expect(mock.verificarSePodeUsarCPF).toHaveBeenCalledTimes(1);
+         expect(mock.verificarSePodeUsarEmail).toHaveBeenCalledTimes(1);
+         expect(mock.verificarSePodeUsarEmail).toHaveBeenCalledWith(
+            usuario.id,
+            usuario.email
+         );
+         expect(mock.dao.update).toHaveBeenCalledTimes(0);
       });
 
       test("Deve lançar um erro ao atualizar funcionário", async () => {
          const usuario = usuarioFactory()[0];
-         const id = usuario.id;
 
-         jest.spyOn(dao, dao.findByCPF.name).mockImplementation(() => ({ id }));
-         jest
-            .spyOn(dao, dao.findByEmail.name)
-            .mockImplementation(() => ({ id }));
+         const moduloUpdateRewire = rewire(
+            "../../../../src/service/usuario/update.js"
+         );
 
          const error = "erro: atualizar funcionario";
-         jest.spyOn(dao, dao.update.name).mockImplementation(() => {
-            throw error;
-         });
+         const mock = {
+            verificarSePodeUsarCPF: jest.fn(),
+            verificarSePodeUsarEmail: jest.fn(),
+            dao: {
+               update: jest.fn().mockImplementation(() => {
+                  throw error;
+               }),
+            },
+         };
+
+         moduloUpdateRewire.__set__(mock);
+         const updateRewire = moduloUpdateRewire.__get__("update");
+
+         jest
+            .spyOn(service, service.update.name)
+            .mockImplementation(async (usuario) => await updateRewire(usuario));
 
          const update = async () => await service.update(usuario);
 
          await expect(update).rejects.toEqual(error);
+         expect(mock.verificarSePodeUsarCPF).toHaveBeenCalledTimes(1);
+         expect(mock.verificarSePodeUsarEmail).toHaveBeenCalledTimes(1);
+         expect(mock.dao.update).toHaveBeenCalledWith(usuario);
       });
 
       test("Deve conseguir atualizar o usuario", async () => {
          const usuario = usuarioFactory()[0];
-         const id = usuario.id;
 
-         jest.spyOn(dao, dao.findByCPF.name).mockImplementation(() => ({ id }));
+         const moduloUpdateRewire = rewire(
+            "../../../../src/service/usuario/update.js"
+         );
+
+         const mock = {
+            verificarSePodeUsarCPF: jest.fn(),
+            verificarSePodeUsarEmail: jest.fn(),
+            dao: {
+               update: jest.fn().mockResolvedValue(usuario),
+            },
+            cache: {
+               removerDadosNaCache: jest.fn(),
+            },
+         };
+         moduloUpdateRewire.__set__(mock);
+         const updateRewire = moduloUpdateRewire.__get__("update");
+
          jest
-            .spyOn(dao, dao.findByEmail.name)
-            .mockImplementation(() => ({ id }));
-
-         jest.spyOn(dao, dao.update.name).mockImplementation(() => usuario);
+            .spyOn(service, service.update.name)
+            .mockImplementation(async (usuario) => await updateRewire(usuario));
 
          const result = await service.update(usuario);
 
          expect(result).toEqual(usuario);
+         expect(mock.verificarSePodeUsarCPF).toHaveBeenCalledTimes(1);
+         expect(mock.verificarSePodeUsarEmail).toHaveBeenCalledTimes(1);
+         expect(mock.dao.update).toHaveBeenCalledWith(usuario);
+         expect(mock.cache.removerDadosNaCache).toHaveBeenCalledWith(
+            "usuarios"
+         );
       });
    });
 });
