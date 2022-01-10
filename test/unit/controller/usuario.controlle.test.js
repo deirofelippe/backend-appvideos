@@ -85,4 +85,32 @@ describe("controller.usuario", () => {
          expect(res.status).toHaveBeenCalledWith(status);
       });
    });
+
+   describe("#update", () => {
+      test("Deve retornar usuario atualizado", async () => {
+         const usuario = { nome: "abc" };
+
+         jest.spyOn(service, service.update.name).mockResolvedValue(usuario);
+
+         await controller.update(req, res);
+
+         expect(res.status).toHaveBeenCalledWith(200);
+         expect(res.json).toHaveBeenCalledWith(usuario);
+      });
+
+      test("O service.update deve lançar um erro", async () => {
+         const error = montarError(400, { msg: ["algum erro no update"] });
+
+         jest.spyOn(service, service.update.name).mockImplementation(() => {
+            throw error;
+         });
+
+         await controller.update(req, res);
+
+         const { status, errors } = error;
+
+         expect(res.json).toHaveBeenCalledWith({ errors });
+         expect(res.status).toHaveBeenCalledWith(status);
+      });
+   });
 });
