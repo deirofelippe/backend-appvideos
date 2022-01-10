@@ -1,6 +1,6 @@
-const dao = require("../../dao/usuario.dao.js");
-const cache = require("../../cache");
-const montarError = require("../../utils/montarError.js");
+let dao = require("../../dao/usuario.dao.js");
+let cache = require("../../cache");
+let montarError = require("../../utils/montarError.js");
 
 async function update(usuario) {
    const { cpf, email, id } = usuario;
