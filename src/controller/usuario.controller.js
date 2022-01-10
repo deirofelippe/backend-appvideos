@@ -1,5 +1,4 @@
-const logger = require("../logger.js");
-const service = require("../service/usuario.service.js");
+const service = require("../service/usuario");
 const usuarioFactory = require("../../test/usuarioFactory.js");
 
 async function findAll(req, res) {
@@ -24,7 +23,17 @@ async function create(req, res) {
    }
 }
 
+async function update(req, res) {
+   try {
+      const result = await service.update(req.body);
+      res.status(200).json(result);
+   } catch ({ status, errors }) {
+      res.status(status).json({ errors });
+   }
+}
+
 module.exports = {
    findAll,
    create,
+   update,
 };
