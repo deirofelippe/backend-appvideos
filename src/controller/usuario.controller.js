@@ -16,7 +16,7 @@ async function create(req, res) {
 
    try {
       const result = await service.create(req.body);
-      res.status(200).json(result);
+      res.status(201).json(result);
    } catch ({ status, errors }) {
       res.status(status).json({ errors });
    }
