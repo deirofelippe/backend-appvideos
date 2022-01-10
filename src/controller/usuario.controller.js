@@ -40,9 +40,19 @@ async function remove(req, res) {
    }
 }
 
+async function findById(req, res) {
+   try {
+      const result = await service.findById(req.body);
+      res.status(200).json(result);
+   } catch ({ status, errors }) {
+      res.status(status).json({ errors });
+   }
+}
+
 module.exports = {
    findAll,
    create,
    update,
    remove,
+   findById,
 };

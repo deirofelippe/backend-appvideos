@@ -114,7 +114,7 @@ describe("controller.usuario", () => {
       });
    });
 
-   describe.only("#remove", () => {
+   describe("#remove", () => {
       test("Deve retornar usuario atualizado", async () => {
          const usuario = { nome: "abc" };
 
@@ -134,6 +134,34 @@ describe("controller.usuario", () => {
          });
 
          await controller.remove(req, res);
+
+         const { status, errors } = error;
+
+         expect(res.json).toHaveBeenCalledWith({ errors });
+         expect(res.status).toHaveBeenCalledWith(status);
+      });
+   });
+
+   describe("#findById", () => {
+      test("Deve retornar usuario atualizado", async () => {
+         const usuario = { nome: "abc" };
+
+         jest.spyOn(service, service.findById.name).mockResolvedValue(usuario);
+
+         await controller.findById(req, res);
+
+         expect(res.status).toHaveBeenCalledWith(200);
+         expect(res.json).toHaveBeenCalledWith(usuario);
+      });
+
+      test("O service.findById deve lançar um erro", async () => {
+         const error = montarError(400, { msg: ["algum erro no findById"] });
+
+         jest.spyOn(service, service.findById.name).mockImplementation(() => {
+            throw error;
+         });
+
+         await controller.findById(req, res);
 
          const { status, errors } = error;
 
