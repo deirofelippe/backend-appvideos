@@ -1,7 +1,7 @@
 const dao = require("../../dao/usuario.dao.js");
 const cache = require("../../cache");
 
-async function findById(id) {
+async function findById({ id }) {
    const temUsuarioNaCache = await cache.buscarDadosNaCache(`usuario:${id}`);
    if (temUsuarioNaCache) return temUsuarioNaCache;
 

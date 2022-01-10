@@ -17,7 +17,7 @@ describe("service.usuario", () => {
 
          const id = "001";
 
-         const remove = async () => await service.remove(id);
+         const remove = async () => await service.remove({ id });
 
          await expect(remove).rejects.toEqual(error);
       });
@@ -28,7 +28,7 @@ describe("service.usuario", () => {
 
          const id = "001";
 
-         const result = await service.remove(id);
+         const result = await service.remove({ id });
 
          expect(dao.remove).toHaveBeenCalledWith(id);
          expect(cache.removerDadosNaCache).toHaveBeenCalledWith("usuarios");

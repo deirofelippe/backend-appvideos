@@ -19,7 +19,7 @@ describe("service.usuario", () => {
             .spyOn(cache, cache.buscarDadosNaCache.name)
             .mockResolvedValue(usuario);
 
-         const result = await service.findById(id);
+         const result = await service.findById({ id });
 
          expect(result).toEqual(usuario);
          expect(cache.buscarDadosNaCache).toHaveBeenCalledWith(`usuario:${id}`);
@@ -39,7 +39,7 @@ describe("service.usuario", () => {
             throw error;
          });
 
-         const findById = async () => await service.findById(id);
+         const findById = async () => await service.findById({ id });
 
          await expect(findById).rejects.toEqual(error);
          expect(dao.findById).toHaveBeenCalledWith(id);
@@ -53,7 +53,7 @@ describe("service.usuario", () => {
 
          jest.spyOn(dao, dao.findById.name).mockResolvedValue({});
 
-         const result = await service.findById(id);
+         const result = await service.findById({ id });
 
          expect(result).toEqual({});
          expect(dao.findById).toHaveBeenCalledWith(id);
@@ -70,7 +70,7 @@ describe("service.usuario", () => {
          jest.spyOn(dao, dao.findById.name).mockResolvedValue(usuario);
          jest.spyOn(cache, cache.gravarDadosNaCache.name);
 
-         const result = await service.findById(id);
+         const result = await service.findById({ id });
 
          delete usuario.senha;
 
