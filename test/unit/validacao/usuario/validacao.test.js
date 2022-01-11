@@ -1,8 +1,8 @@
 const { describe, test, expect, beforeEach } = require("@jest/globals");
 const faker = require("faker");
-const validarUsuario = require("../../../src/validacao/usuario.validacao.js");
-const logger = require("../../../src/logger.js");
-const usuarioFactory = require("../../usuarioFactory.js");
+const { create: validarUsuario } = require("../../../../src/validacao/usuario");
+const logger = require("../../../../src/logger.js");
+const usuarioFactory = require("../../../usuarioFactory.js");
 
 jest.spyOn(logger, "error").mockImplementation();
 jest.spyOn(logger, "info").mockImplementation();

@@ -1,8 +1,8 @@
-const logger = require("../logger.js");
-const schema = require("./usuario.schema.js");
-const tirarFormatacaoDoCPF = require("./utils.js");
+const logger = require("../../logger.js");
+const schema = require("./create.schema.js");
+const tirarFormatacaoDoCPF = require("../utils.js");
 
-async function validarUsuario(req, res, next) {
+async function validar(req, res, next) {
    const usuario = req.body;
    const cpf = usuario.cpf;
 
@@ -41,4 +41,4 @@ function montarMensagemDeErro({ inner: errors }) {
    return errorsMsg;
 }
 
-module.exports = validarUsuario;
+module.exports = validar;
