@@ -9,7 +9,18 @@ async function findAll() {
 
    if (!usuarios) return usuarios;
 
-   await cache.gravarDadosNaCache("usuarios", usuarios);
-   return usuarios;
+   const usuariosLimpos = tirarPropriedadesDaLista(usuarios);
+
+   await cache.gravarDadosNaCache("usuarios", usuariosLimpos);
+   return usuariosLimpos;
 }
+
+const tirarPropriedadesDaLista = (usuarios) =>
+   usuarios.map((usuario) => {
+      delete usuario.updatedAt;
+      delete usuario.createdAt;
+      delete usuario.senha;
+      return usuario;
+   });
+
 module.exports = findAll;
