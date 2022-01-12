@@ -1,6 +1,6 @@
 const logger = require("../../logger.js");
 const schema = require("./create.schema.js");
-const tirarFormatacaoDoCPF = require("../utils.js");
+const { montarMensagemDeErro, tirarFormatacaoDoCPF } = require("../utils.js");
 
 async function validar(req, res, next) {
    const usuario = req.body;
@@ -19,26 +19,6 @@ async function validar(req, res, next) {
 
       res.status(401).send({ errors: errorsMsg });
    }
-}
-
-function montarMensagemDeErro({ inner: errors }) {
-   let campo = {};
-   let descricaoError = "";
-
-   const errorsMsg = errors.reduce((msg, error) => {
-      campo = error.path;
-      descricaoError = error.errors[0];
-
-      if (!msg.hasOwnProperty(campo)) {
-         msg[campo] = [descricaoError];
-         return msg;
-      }
-
-      msg[campo].push(descricaoError);
-      return msg;
-   }, {});
-
-   return errorsMsg;
 }
 
 module.exports = validar;
