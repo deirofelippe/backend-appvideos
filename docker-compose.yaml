@@ -6,18 +6,15 @@ services:
       container_name: backend-appvideos
       volumes:
         - ".:/app"
-      networks:
-        - n_bridge
       ports:
         - "3000:3000"
       depends_on:
         - mysql
+
    mysql:
       image: mysql:8.0
       container_name: mysql
       restart: always
-      networks:
-        - n_bridge
       ports:
         - "6033:3306"
       volumes:
@@ -30,8 +27,6 @@ services:
       image: phpmyadmin/phpmyadmin:5.1.1
       container_name: phpmyadmin
       restart: always
-      networks:
-        - n_bridge
       ports:
         - "8081:80"
       environment:
@@ -40,18 +35,16 @@ services:
         - mysql
 
    redis:
-      image: redis
-      container_name: redis:6.2.6-alpine
-      networks:
-        - n_bridge
+      image: redis:6.2.6-alpine
+      container_name: redis
       ports:
         - "6379:6379"
 
 volumes:
    v_mysql:
+      external: true
 
 networks:
-   n_bridge:
-
-# a senha e usuario é root
-# caso queira usar o workbench, é so colocar localhost e a porta 6033. nao tem necessidade de usar o phpmyadmin como interface, então pode deletar as linhas
+   default:
+      external: true
+      name: appvideos

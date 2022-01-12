@@ -8,13 +8,13 @@ async function findAll() {
    try {
       const results = await model.findAll();
 
-      logger.info("Usuarios buscados: " + JSON.stringify(result));
+      logger.info("Usuarios buscados: " + JSON.stringify(results));
 
       if (!results) return results;
 
       return results.map(formatarRetorno);
    } catch (error) {
-      logger.error(error);
+      logger.error("[ERRO NO BD, FIND ALL]: " + error);
       throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
@@ -33,53 +33,53 @@ async function create(usuario) {
 
 async function findByEmail(email) {
    try {
-      const result = await model.findOne({ where: email });
+      const result = await model.findOne({ where: { email } });
 
       logger.info("Usuario buscado pelo email: " + JSON.stringify(result));
       return result?.dataValues;
    } catch (error) {
-      logger.error(error);
-      return montarError(500, { msg: ["Algo deu errado!"] });
+      logger.error("[ERRO NO BD, FIND BY EMAIL]: " + error);
+      throw montarError(500, { msg: ["Algo deu errado!"] });
+   }
+}
+
+async function findByCPF(cpf) {
+   try {
+      const result = await model.findOne({ where: { cpf } });
+
+      logger.info("Usuario buscado pelo CPF: " + JSON.stringify(result));
+      return result?.dataValues;
+   } catch (error) {
+      logger.error("[ERRO NO BD, FIND BY CPF]: " + error);
+      throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
 
 async function findById(id) {
    try {
-      const result = await model.findByPk(id);
+      const result = await model.findOne({ where: { id } });
 
       logger.info("Usuario buscado: " + JSON.stringify(result));
       return result?.dataValues;
    } catch (error) {
-      logger.error(error);
-      return null;
-   }
-}
-
-async function findToUpdate(id) {
-   try {
-      const result = await model.findByPk(id);
-
-      logger.info(
-         "Usuario buscado para ser atualizado: " + JSON.stringify(result)
-      );
-      return result;
-   } catch (error) {
-      logger.error(error);
-      return null;
+      logger.error("[ERRO NO BD, FIND BY ID]: " + error);
+      throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
 
 async function update(novoUsuario) {
    try {
-      const usuario = await findToUpdate(novoUsuario.id);
+      const usuario = await model.findByPk(novoUsuario.id);
+      logger.info("Usuario buscado para ser atualizado");
+
       usuario.dataValues = { ...usuario.dataValues, ...novoUsuario };
       const result = await usuario.save();
 
       logger.info("Usuario atualizado: " + JSON.stringify(result));
-      return result;
+      return result.dataValues;
    } catch (error) {
-      logger.error(error);
-      return null;
+      logger.error("[ERRO NO BD, UPDATE]: " + error);
+      throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
 
@@ -90,8 +90,8 @@ async function remove(id) {
       logger.info("Usuario removido: " + JSON.stringify(result));
       return result;
    } catch (error) {
-      logger.error(error);
-      return null;
+      logger.error("[ERRO NO BD, REMOVE]: " + error);
+      throw montarError(500, { msg: ["Algo deu errado!"] });
    }
 }
 
@@ -100,6 +100,7 @@ module.exports = {
    update,
    findById,
    findByEmail,
+   findByCPF,
    findAll,
    create,
 };

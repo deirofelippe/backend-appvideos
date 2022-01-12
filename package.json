@@ -11,8 +11,8 @@
     "pretest": "cross-env NODE_ENV=test npx sequelize db:migrate",
     "test": "cross-env NODE_ENV=test npx jest --config jest.config.js --runInBand",
     "posttest": "cross-env NODE_ENV=test npx sequelize db:migrate:undo:all",
-    "test:cov": "npx jest --config jest.config.js --coverage",
-    "test:w:a": "npx jest --config jest.config.js --watchAll",
+    "test:cov": "cross-env NODE_ENV=test npx jest --config jest.config.js --coverage --runInBand",
+    "test:w:a": "cross-env NODE_ENV=test npx jest --config jest.config.js --watchAll --runInBand",
     "pretest:w": "cross-env NODE_ENV=test npx sequelize db:migrate",
     "test:w": "cross-env NODE_ENV=test npx jest --config jest.config.js --runInBand --watch",
     "posttest:w": "cross-env NODE_ENV=test npx sequelize db:migrate:undo:all"
@@ -23,6 +23,7 @@
     "cors": "^2.8.5",
     "cpf-cnpj-validator": "^1.0.3",
     "dotenv": "^10.0.0",
+    "elastic-apm-node": "^3.26.0",
     "express": "~4.16.1",
     "helmet": "^4.6.0",
     "ioredis": "^4.28.2",
@@ -42,7 +43,10 @@
     "faker": "^5.5.3",
     "jest": "^27.4.5",
     "nodemon": "^2.0.15",
+    "rewire": "^6.0.0",
     "sequelize-cli": "^6.3.0",
-    "supertest": "^6.1.6"
+    "sqlite3": "^5.0.2",
+    "supertest": "^6.1.6",
+    "testcontainers": "^8.2.0"
   }
 }
