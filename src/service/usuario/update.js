@@ -13,6 +13,11 @@ async function update(usuario) {
 
    await cache.removerDadosNaCache("usuarios");
 
+   delete result.senha;
+   delete result.id;
+   delete result.createdAt;
+   delete result.updatedAt;
+
    return result;
 }
 
@@ -20,6 +25,8 @@ async function verificarSePodeUsarCPF(id, cpf) {
    if (!cpf) return;
 
    const usuarioEncontrado = await dao.findByCPF(cpf);
+
+   if (!usuarioEncontrado) return;
 
    if (usuarioEncontrado.id !== id) {
       throw montarError(401, { cpf: ["CPF não pode ser usado"] });
@@ -30,6 +37,8 @@ async function verificarSePodeUsarEmail(id, email) {
    if (!email) return;
 
    const usuarioEncontrado = await dao.findByEmail(email);
+
+   if (!usuarioEncontrado) return;
 
    if (usuarioEncontrado.id !== id) {
       throw montarError(401, { email: ["Email não pode ser usado"] });
