@@ -7,8 +7,8 @@ const usuarioFactory = require("../../../usuarioFactory.js");
 jest.spyOn(logger, "error").mockImplementation();
 jest.spyOn(logger, "info").mockImplementation();
 
-describe("Validação de usuário", () => {
-   describe("#validarUsuario", () => {
+describe("Validação de usuário: POST -> CREATE", () => {
+   describe("#validar", () => {
       const req = {
          body: {},
       };
