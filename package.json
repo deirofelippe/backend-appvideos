@@ -46,6 +46,7 @@
     "rewire": "^6.0.0",
     "sequelize-cli": "^6.3.0",
     "sqlite3": "^5.0.2",
-    "supertest": "^6.1.6"
+    "supertest": "^6.1.6",
+    "testcontainers": "^8.2.0"
   }
 }

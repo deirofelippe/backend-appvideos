@@ -1,11 +1,6 @@
 require("dotenv").config();
 const logger = require("../logger.js");
-const Redis = require("ioredis");
-const montarError = require("../utils/montarError.js");
-const redis = new Redis({
-   port: process.env.REDIS_PORT || 6379,
-   host: process.env.REDIS_HOST,
-});
+let redis = require("./redisInstance.js")();
 
 async function buscarDadosNaCache(chave) {
    try {
@@ -22,6 +17,7 @@ async function gravarDadosNaCache(chave, valor) {
       await redis.set(chave, JSON.stringify(valor));
    } catch (error) {
       logger.error("[ERRO NA CACHE, GRAVAR]: " + error);
+      return null;
    }
 }
 
@@ -30,6 +26,7 @@ async function removerDadosNaCache(chave) {
       await redis.set(chave, "");
    } catch (error) {
       logger.error("[ERRO NA CACHE, REMOVER]: " + error);
+      return null;
    }
 }
 

@@ -8,7 +8,7 @@ faker.locale = "pt_BR";
  * @param {*} quantidade por padrão o valor é 1
  * @returns
  */
-function factory(quantidade = 1) {
+function usuarioFactory(quantidade = 1) {
    const usuarios = [];
    for (let index = 1; index <= quantidade; index++) {
       usuarios.push({
@@ -23,4 +23,4 @@ function factory(quantidade = 1) {
    return usuarios;
 }
 
-module.exports = factory;
+module.exports = usuarioFactory;
