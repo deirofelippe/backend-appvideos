@@ -12,6 +12,7 @@ async function update(usuario) {
    const result = await dao.update(usuario);
 
    await cache.removerDadosNaCache("usuarios");
+   await cache.removerDadosNaCache(`usuario:${id}`);
 
    delete result.senha;
    delete result.id;
