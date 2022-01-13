@@ -13,7 +13,10 @@ const model = require("../../../src/models/usuario.js");
 const montarError = require("../../../src/utils/montarError");
 const truncate = require("../../truncate.js");
 
-jest.mock("../../../src/logger.js");
+jest.mock("../../../src/logger.js", () => ({
+   error: () => ({}),
+   info: () => ({}),
+}));
 
 describe("usuario.dao", () => {
    afterEach(async () => {
