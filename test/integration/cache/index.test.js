@@ -26,7 +26,7 @@ describe("Cache com redis", () => {
    });
 
    beforeEach(async () => {
-      await redis.set("usuarios", "");
+      await redis.flushall();
    });
 
    describe("#buscarDadosNaCache", () => {
@@ -116,10 +116,10 @@ describe("Cache com redis", () => {
       test("Deve ser lançado erro", async () => {
          const cacheRewire = require("rewire")("../../../src/cache");
 
-         const error = "erro redis.set";
+         const error = "erro redis.del";
 
          const redisMock = {
-            set: jest.fn().mockImplementation(() => {
+            del: jest.fn().mockImplementation(() => {
                throw error;
             }),
          };
