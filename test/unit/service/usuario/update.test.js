@@ -288,7 +288,7 @@ describe("service.usuario", () => {
             verificarSePodeUsarCPF: jest.fn(),
             verificarSePodeUsarEmail: jest.fn(),
             dao: {
-               update: jest.fn().mockResolvedValue(usuario),
+               update: jest.fn().mockResolvedValue(1),
             },
             cache: {
                removerDadosNaCache: jest.fn(),
@@ -297,13 +297,8 @@ describe("service.usuario", () => {
          moduloUpdateRewire.__set__(mock);
          const updateRewire = moduloUpdateRewire.__get__("update");
 
-         jest
-            .spyOn(service, service.update.name)
-            .mockImplementation(async (usuario) => await updateRewire(usuario));
+         await updateRewire(usuario);
 
-         const result = await service.update(usuario);
-
-         expect(result).toEqual(usuario);
          expect(mock.verificarSePodeUsarCPF).toHaveBeenCalledTimes(1);
          expect(mock.verificarSePodeUsarEmail).toHaveBeenCalledTimes(1);
          expect(mock.dao.update).toHaveBeenCalledWith(usuario);

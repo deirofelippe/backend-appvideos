@@ -90,9 +90,8 @@ describe("service.usuario", () => {
 
          expect(dao.create).toHaveBeenCalledWith(expectedParams);
          expect(cache.removerDadosNaCache).toHaveBeenCalledWith("usuarios");
-         expect(result.createdAt).toBeDefined();
-         expect(result.updatedAt).toBeDefined();
-         expect(result.senha).toBeUndefined();
+         expect(result).toHaveProperty("nome");
+         expect(result).toHaveProperty("email");
       });
    });
 });

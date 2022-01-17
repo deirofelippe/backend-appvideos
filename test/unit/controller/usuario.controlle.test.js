@@ -6,6 +6,7 @@ const montarError = require("../../../src/utils/montarError.js");
 describe("controller.usuario", () => {
    const req = {
       body: {},
+      params: {},
    };
 
    const res = {
@@ -25,6 +26,7 @@ describe("controller.usuario", () => {
       res.json = jest.fn();
 
       req.body = {};
+      req.params = {};
 
       error.errors = [];
       error.status = 0;
@@ -92,10 +94,11 @@ describe("controller.usuario", () => {
 
          jest.spyOn(service, service.update.name).mockResolvedValue(usuario);
 
+         req.params.id = "01";
+
          await controller.update(req, res);
 
-         expect(res.status).toHaveBeenCalledWith(200);
-         expect(res.json).toHaveBeenCalledWith(usuario);
+         expect(res.status).toHaveBeenCalledWith(204);
       });
 
       test("O service.update deve lançar um erro", async () => {
@@ -104,6 +107,8 @@ describe("controller.usuario", () => {
          jest.spyOn(service, service.update.name).mockImplementation(() => {
             throw error;
          });
+
+         req.params.id = "01";
 
          await controller.update(req, res);
 

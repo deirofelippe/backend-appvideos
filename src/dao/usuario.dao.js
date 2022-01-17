@@ -69,14 +69,9 @@ async function findById(id) {
 
 async function update(novoUsuario) {
    try {
-      const usuario = await model.findByPk(novoUsuario.id);
-      logger.info("Usuario buscado para ser atualizado");
-
-      usuario.dataValues = { ...usuario.dataValues, ...novoUsuario };
-      const result = await usuario.save();
-
-      logger.info("Usuario atualizado: " + JSON.stringify(result));
-      return result.dataValues;
+      const { id } = novoUsuario;
+      const [status] = await model.update(novoUsuario, { where: { id } });
+      return status;
    } catch (error) {
       logger.error("[ERRO NO BD, UPDATE]: " + error);
       throw montarError(500, { msg: ["Algo deu errado!"] });

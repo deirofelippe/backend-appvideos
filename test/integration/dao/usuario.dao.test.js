@@ -13,7 +13,10 @@ const model = require("../../../src/models/usuario.js");
 const montarError = require("../../../src/utils/montarError");
 const truncate = require("../../truncate.js");
 
-jest.mock("../../../src/logger.js");
+jest.mock("../../../src/logger.js", () => ({
+   error: () => ({}),
+   info: () => ({}),
+}));
 
 describe("usuario.dao", () => {
    afterEach(async () => {
@@ -184,10 +187,10 @@ describe("usuario.dao", () => {
 
    describe("#update", () => {
       test("Deve atualizar o usuario", async () => {
-         const usuario = usuarioFactory()[0];
-         const usuarioModel = await model.create(usuario);
+         const { ...usuario } = usuarioFactory()[0];
+         await model.create(usuario);
 
-         const { senha, ...usuarioPraAtualizar } = usuario;
+         const usuarioPraAtualizar = { ...usuario };
 
          const faker = require("faker");
          const novoNome = faker.name.findName();
@@ -195,23 +198,27 @@ describe("usuario.dao", () => {
          usuarioPraAtualizar.nome = novoNome;
          usuarioPraAtualizar.email = novoEmail;
 
-         jest.spyOn(model, model.findByPk.name).mockResolvedValue(usuarioModel);
+         const result = await dao.update(usuarioPraAtualizar);
 
-         const usuarioAtualizado = await dao.update(usuarioPraAtualizar);
+         const { dataValues } = await model.findByPk(usuario.id);
 
-         expect(usuarioAtualizado.nome).toEqual(novoNome);
-         expect(usuarioAtualizado.email).toEqual(novoEmail);
+         delete dataValues.createdAt;
+         delete dataValues.updatedAt;
+
+         const usuarioAtualizado = dataValues;
+
+         expect(result).toBeTruthy();
+         expect(usuarioAtualizado).toEqual(usuarioPraAtualizar);
+         expect(usuarioAtualizado).not.toEqual(usuario);
       });
 
       test("Deve lancar um erro", async () => {
          const usuario = usuarioFactory()[0];
-         const usuarioModel = await model.create(usuario);
+         await model.create(usuario);
 
-         usuarioModel.save = jest.fn().mockImplementation(() => {
+         jest.spyOn(model, model.update.name).mockImplementation(() => {
             throw "error";
          });
-
-         jest.spyOn(model, model.findByPk.name).mockResolvedValue(usuarioModel);
 
          const expectedError = error;
 

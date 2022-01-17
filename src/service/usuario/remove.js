@@ -5,6 +5,7 @@ async function remove({ id }) {
    const result = await dao.remove(id);
 
    await cache.removerDadosNaCache("usuarios");
+   await cache.removerDadosNaCache(`usuario:${id}`);
 
    return result;
 }

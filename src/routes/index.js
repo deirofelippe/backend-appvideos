@@ -7,9 +7,9 @@ const router = express.Router();
 
 router.post("/usuario", validacao.create, usuarioController.create);
 router.get("/usuario", usuarioController.findAll);
-router.get("/usuario/:id", usuarioController.findById);
-router.put("/usuario/:id", usuarioController.update);
-router.delete("/usuario/:id", usuarioController.remove);
+router.get("/usuario/:id", validacao.findById, usuarioController.findById);
+router.put("/usuario/:id", validacao.update, usuarioController.update);
+router.delete("/usuario/:id", validacao.remove, usuarioController.remove);
 
 router.post("/login", loginController.login);
 router.post("/logout", loginController.logout);
