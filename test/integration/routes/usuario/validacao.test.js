@@ -157,7 +157,7 @@ describe("Integração de request, validação e controller", () => {
 
             const res = await request(app).put(`/usuario/${id}`).send(usuario);
 
-            expect(res.body).toEqual(usuario);
+            expect(res.status).toEqual(204);
          });
       });
 

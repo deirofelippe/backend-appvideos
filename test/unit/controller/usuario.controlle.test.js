@@ -98,8 +98,7 @@ describe("controller.usuario", () => {
 
          await controller.update(req, res);
 
-         expect(res.status).toHaveBeenCalledWith(200);
-         expect(res.json).toHaveBeenCalledWith(usuario);
+         expect(res.status).toHaveBeenCalledWith(204);
       });
 
       test("O service.update deve lançar um erro", async () => {

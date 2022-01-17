@@ -84,13 +84,6 @@ describe("Integração desde o request, até a escrita no BD", () => {
       const { id } = usuario;
       const res = await request(app).put(`/usuario/${id}`).send(novoUsuario);
 
-      const expectedUser = {
-         nome: novoUsuario.nome,
-         cpf: novoUsuario.cpf,
-         email: novoUsuario.email,
-      };
-
-      expect(res.body).toEqual(expectedUser);
-      expect(res.status).toEqual(200);
+      expect(res.status).toEqual(204);
    });
 });
