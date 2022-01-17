@@ -9,17 +9,10 @@ async function update(usuario) {
 
    await verificarSePodeUsarEmail(id, email);
 
-   const result = await dao.update(usuario);
+   await dao.update(usuario);
 
    await cache.removerDadosNaCache("usuarios");
    await cache.removerDadosNaCache(`usuario:${id}`);
-
-   delete result.senha;
-   delete result.id;
-   delete result.createdAt;
-   delete result.updatedAt;
-
-   return result;
 }
 
 async function verificarSePodeUsarCPF(id, cpf) {

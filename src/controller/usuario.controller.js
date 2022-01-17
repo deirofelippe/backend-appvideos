@@ -1,5 +1,4 @@
 const service = require("../service/usuario");
-const usuarioFactory = require("../../test/usuarioFactory.js");
 
 async function findAll(req, res) {
    try {
@@ -11,9 +10,6 @@ async function findAll(req, res) {
 }
 
 async function create(req, res) {
-   const u = usuarioFactory()[0];
-   if (req.body?.random === "1") req.body = { ...u };
-
    try {
       const result = await service.create(req.body);
       res.status(201).json(result);
@@ -29,8 +25,8 @@ async function update(req, res) {
    };
 
    try {
-      const result = await service.update(usuario);
-      res.status(200).json(result);
+      await service.update(usuario);
+      res.status(204).end();
    } catch ({ status, errors }) {
       res.status(status).json({ errors });
    }
