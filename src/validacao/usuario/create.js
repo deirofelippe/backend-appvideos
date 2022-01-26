@@ -1,8 +1,12 @@
 const logger = require("../../logger.js");
 const schema = require("./create.schema.js");
 const { montarMensagemDeErro, tirarFormatacaoDoCPF } = require("../utils.js");
+const usuarioFactory = require("../../../test/usuarioFactory.js");
 
 async function validar(req, res, next) {
+   const u = usuarioFactory()[0];
+   if (req.body?.random === "1") req.body = { ...u };
+
    const usuario = req.body;
    const cpf = usuario.cpf;
 
@@ -13,7 +17,7 @@ async function validar(req, res, next) {
 
       next();
    } catch (errors) {
-      logger.error(errors);
+      logger.error(JSON.stringify(errors));
 
       const errorsMsg = montarMensagemDeErro(errors);
 
