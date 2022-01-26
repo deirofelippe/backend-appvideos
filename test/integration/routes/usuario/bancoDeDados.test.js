@@ -13,6 +13,10 @@ const request = require("supertest");
 const usuarioFactory = require("../../../usuarioFactory");
 const model = require("../../../../src/models/usuario");
 
+jest.mock("../../../../src/kafka/index.js", () => () => ({
+   send: () => ({}),
+}));
+
 jest.mock("../../../../src/logger", () => ({
    error: () => ({}),
    info: () => ({}),

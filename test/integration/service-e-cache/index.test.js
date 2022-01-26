@@ -16,6 +16,10 @@ jest.mock("../../../src/logger", () => ({
    info: () => ({}),
 }));
 
+jest.mock("../../../src/kafka/index.js", () => () => ({
+   send: () => ({}),
+}));
+
 describe("Integração do service junto com o cache", () => {
    let redis;
 

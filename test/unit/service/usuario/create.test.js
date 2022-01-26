@@ -11,12 +11,16 @@ const uuid = require("uuid");
 jest.mock("uuid");
 uuid.v4.mockReturnValue("001");
 
-describe("service.usuario", () => {
-   beforeEach(() => {
-      jest.restoreAllMocks();
-   });
+jest.mock("../../../../src/kafka/index.js", () => () => ({
+   send: () => ({}),
+}));
 
+describe("service.usuario", () => {
    describe("#create", () => {
+      beforeEach(() => {
+         jest.restoreAllMocks();
+      });
+
       test("Email já existente, deve lançar um erro", async () => {
          jest.spyOn(dao, dao.findByEmail.name).mockResolvedValue(true);
 
