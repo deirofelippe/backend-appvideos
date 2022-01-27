@@ -1,10 +1,10 @@
 const dao = require("../../dao/usuario.dao.js");
 const uuid = require("uuid");
 const bcrypt = require("bcrypt");
-const cache = require("../../cache");
+let cache = require("../../cache");
 const montarError = require("../../utils/montarError.js");
 let kafkaConnection = require("../../kafka");
-const logger = require("../../logger.js");
+let logger = require("../../logger.js");
 
 async function create(usuario) {
    const existeEmail = await dao.findByEmail(usuario.email);

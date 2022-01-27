@@ -1,5 +1,5 @@
 const { Kafka } = require("kafkajs");
-const logger = require("../logger");
+let logger = require("../logger");
 const montarError = require("../utils/montarError");
 
 async function connection() {

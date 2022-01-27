@@ -15,6 +15,11 @@ jest.mock("../../../../src/kafka/index.js", () => () => ({
    send: () => ({}),
 }));
 
+jest.mock("../../../../src/logger", () => ({
+   error: () => ({}),
+   info: () => ({}),
+}));
+
 describe("service.usuario", () => {
    describe("#create", () => {
       beforeEach(() => {
@@ -102,6 +107,11 @@ describe("service.usuario", () => {
    });
 
    describe("#enviarMensagemKafka", () => {
+      const logger = {
+         error: () => ({}),
+         info: () => ({}),
+      };
+
       test("Deve enviar ao producer os dados corretamente", async () => {
          const { nome, email } = usuarioFactory()[0];
 
@@ -121,7 +131,7 @@ describe("service.usuario", () => {
 
          const kafkaConnection = () => send;
 
-         createMethodRewire.__set__("kafkaConnection", kafkaConnection);
+         createMethodRewire.__set__({ kafkaConnection, logger });
 
          const enviarMensagemKafka = createMethodRewire.__get__(
             "enviarMensagemKafka"
@@ -145,7 +155,7 @@ describe("service.usuario", () => {
 
          const kafkaConnection = () => send;
 
-         createMethodRewire.__set__("kafkaConnection", kafkaConnection);
+         createMethodRewire.__set__({ kafkaConnection, logger });
 
          const enviarMensagemKafka = createMethodRewire.__get__(
             "enviarMensagemKafka"

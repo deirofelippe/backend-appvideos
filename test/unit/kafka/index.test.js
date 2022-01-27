@@ -11,7 +11,12 @@ describe("Kafka connection", () => {
             throw "error connection";
          });
 
-         runKafkaRewire.__set__("connection", connection);
+         const logger = {
+            error: () => ({}),
+            info: () => ({}),
+         };
+
+         runKafkaRewire.__set__({ connection, logger });
 
          const run = runKafkaRewire.__get__("run");
 
