@@ -44,27 +44,6 @@ describe("Cache com redis", () => {
 
          expect(result).toBeFalsy();
       });
-
-      test("Deve ser lançado erro", async () => {
-         const cacheRewire = require("rewire")("../../../src/cache");
-
-         const error = "erro redis.get";
-
-         const redisMock = {
-            get: jest.fn().mockImplementation(() => {
-               throw error;
-            }),
-         };
-
-         cacheRewire.__set__("redis", redisMock);
-
-         const buscarDadosNaCacheMock =
-            cacheRewire.__get__("buscarDadosNaCache");
-
-         const result = await buscarDadosNaCacheMock("usuarios");
-
-         expect(result).toEqual(null);
-      });
    });
 
    describe("#gravarDadosNaCache", () => {
@@ -76,27 +55,6 @@ describe("Cache com redis", () => {
          const result = await redis.get("usuarios");
 
          expect(result).toEqual(JSON.stringify(usuarios));
-      });
-
-      test("Deve ser lançado erro", async () => {
-         const cacheRewire = require("rewire")("../../../src/cache");
-
-         const error = "erro redis.set";
-
-         const redisMock = {
-            set: jest.fn().mockImplementation(() => {
-               throw error;
-            }),
-         };
-
-         cacheRewire.__set__("redis", redisMock);
-
-         const gravarDadosNaCacheMock =
-            cacheRewire.__get__("gravarDadosNaCache");
-
-         const result = await gravarDadosNaCacheMock("usuarios");
-
-         expect(result).toEqual(null);
       });
    });
 
@@ -111,28 +69,6 @@ describe("Cache com redis", () => {
 
          const resultGet2 = await redis.get("usuarios");
          expect(resultGet2).toBeFalsy();
-      });
-
-      test("Deve ser lançado erro", async () => {
-         const cacheRewire = require("rewire")("../../../src/cache");
-
-         const error = "erro redis.del";
-
-         const redisMock = {
-            del: jest.fn().mockImplementation(() => {
-               throw error;
-            }),
-         };
-
-         cacheRewire.__set__("redis", redisMock);
-
-         const removerDadosNaCacheMock = cacheRewire.__get__(
-            "removerDadosNaCache"
-         );
-
-         const result = await removerDadosNaCacheMock("usuarios");
-
-         expect(result).toEqual(null);
       });
    });
 });
