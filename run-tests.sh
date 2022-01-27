@@ -2,4 +2,4 @@
 
 npm run test:simple test/unit
 npm run test test/integration/dao
-npm run test test/integration/routes
+npm run test test/integration/routes/usuario/validacao.test.js

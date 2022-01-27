@@ -23,9 +23,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run test:simple test/unit
-      - run: npm run test test/integration/dao
-      - run: npm run test test/integration/routes
+      - run: sh run-tests.sh
 
       - name: Check linting
         run: npm run lint
