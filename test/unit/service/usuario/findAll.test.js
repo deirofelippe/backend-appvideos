@@ -46,6 +46,9 @@ describe("service.usuario", () => {
          jest
             .spyOn(cache, cache.buscarDadosNaCache.name)
             .mockResolvedValue(false);
+         jest
+            .spyOn(cache, cache.gravarDadosNaCache.name)
+            .mockResolvedValue(false);
 
          jest.spyOn(dao, dao.findAll.name).mockResolvedValue([]);
 

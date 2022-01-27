@@ -23,7 +23,7 @@ describe("service.usuario", () => {
       });
 
       test("Deve conseguir remover o usuario", async () => {
-         jest.spyOn(cache, cache.removerDadosNaCache.name);
+         jest.spyOn(cache, cache.removerDadosNaCache.name).mockImplementation();
          jest.spyOn(dao, dao.remove.name).mockResolvedValue(1);
 
          const id = "001";
