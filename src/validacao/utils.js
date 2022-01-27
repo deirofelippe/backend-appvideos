@@ -12,7 +12,7 @@ function montarMensagemDeErro({ inner: errors }) {
       campo = error.path;
       descricaoError = error.errors[0];
 
-      if (!msg.hasOwnProperty(campo)) {
+      if (!(campo in msg)) {
          msg[campo] = [descricaoError];
          return msg;
       }

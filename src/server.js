@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const apm = require("elastic-apm-node").start();
+require("elastic-apm-node").start();
 
 const app = require("./app");
 const db = require("./database");

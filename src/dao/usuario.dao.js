@@ -2,7 +2,7 @@ const model = require("../models/usuario.js");
 const logger = require("../logger.js");
 const montarError = require("../utils/montarError.js");
 
-const formatarRetorno = (result) => result?.dataValues;
+const formatarRetorno = (result) => result.dataValues;
 
 async function findAll() {
    try {
