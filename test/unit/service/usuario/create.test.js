@@ -5,16 +5,27 @@ const service = require("../../../../src/service/usuario");
 const dao = require("../../../../src/dao/usuario.dao.js");
 const montarError = require("../../../../src/utils/montarError.js");
 
+const rewire = require("rewire");
+
 const uuid = require("uuid");
 jest.mock("uuid");
 uuid.v4.mockReturnValue("001");
 
-describe("service.usuario", () => {
-   beforeEach(() => {
-      jest.restoreAllMocks();
-   });
+jest.mock("../../../../src/kafka/index.js", () => () => ({
+   send: () => ({}),
+}));
 
+jest.mock("../../../../src/logger", () => ({
+   error: () => ({}),
+   info: () => ({}),
+}));
+
+describe("service.usuario", () => {
    describe("#create", () => {
+      beforeEach(() => {
+         jest.restoreAllMocks();
+      });
+
       test("Email já existente, deve lançar um erro", async () => {
          jest.spyOn(dao, dao.findByEmail.name).mockResolvedValue(true);
 
@@ -92,6 +103,72 @@ describe("service.usuario", () => {
          expect(cache.removerDadosNaCache).toHaveBeenCalledWith("usuarios");
          expect(result).toHaveProperty("nome");
          expect(result).toHaveProperty("email");
+      });
+   });
+
+   describe("#enviarMensagemKafka", () => {
+      const logger = {
+         error: () => ({}),
+         info: () => ({}),
+      };
+
+      test("Deve enviar ao producer os dados corretamente", async () => {
+         const { nome, email } = usuarioFactory()[0];
+
+         const message = JSON.stringify({ nome, email });
+         const record = {
+            topic: process.env.KAFKA_TOPIC,
+            messages: [{ value: message }],
+         };
+
+         const createMethodRewire = rewire(
+            "../../../../src/service/usuario/create.js"
+         );
+
+         const send = {
+            send: jest.fn().mockResolvedValue(),
+         };
+
+         const kafkaConnection = () => send;
+
+         createMethodRewire.__set__({ kafkaConnection, logger });
+
+         const enviarMensagemKafka = createMethodRewire.__get__(
+            "enviarMensagemKafka"
+         );
+
+         await enviarMensagemKafka({ nome, email });
+
+         expect(send.send).toBeCalledWith(record);
+      });
+
+      test("Deve lancar um erro", async () => {
+         const createMethodRewire = rewire(
+            "../../../../src/service/usuario/create.js"
+         );
+
+         const send = {
+            send: jest.fn().mockImplementation(() => {
+               throw "xabu";
+            }),
+         };
+
+         const kafkaConnection = () => send;
+
+         createMethodRewire.__set__({ kafkaConnection, logger });
+
+         const enviarMensagemKafka = createMethodRewire.__get__(
+            "enviarMensagemKafka"
+         );
+
+         const expectedError = montarError(500, { msg: ["Algo deu errado"] });
+
+         const usuario = { nome: "a", email: "b" };
+
+         const kafkaProduce = async () => await enviarMensagemKafka(usuario);
+
+         await expect(kafkaProduce).rejects.toEqual(expectedError);
+         expect(kafkaConnection().send).toBeCalledTimes(1);
       });
    });
 });

@@ -6,8 +6,26 @@ content-type: application/json
     "nome": "euu",
     "email": "eu@mail.com",
     "senha": "eu.gmail.br.redes.com",
-    "cpf": "17241770790"
+    "cpf": "17272112770"
 }
 
 ###
 GET http://localhost:3000/usuario HTTP/1.1
+
+###
+GET http://localhost:3000/usuario/test HTTP/1.1
+
+###
+GET http://localhost:3000/usuario/b8a79577-e55d-4ebd-b473-5df3e74ade1b HTTP/1.1
+
+###
+PUT http://localhost:3000/usuario/0e430ce1-ab22-4b2f-b150-2b42b5797019 HTTP/1.1
+content-type: application/json
+
+{
+    "nome": "euu",
+    "email": "euua@mail.com"
+}
+
+###
+DELETE http://localhost:3000/usuario/0e430ce1-ab22-4b2f-b150-2b42b5797019 HTTP/1.1

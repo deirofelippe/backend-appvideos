@@ -1,17 +1,21 @@
 {
    "env": {
       "browser": true,
+      "commonjs": true,
       "es2021": true
    },
-   "extends": "eslint:recommended",
+   "extends": ["eslint:recommended", "prettier"],
    "parserOptions": {
-      "ecmaVersion": 2019
+      "ecmaVersion": 11
    },
-   "rules": {},
+   "rules": {
+      "no-unsafe-optional-chaining": "error",
+      "no-unused-vars": ["error", { "ignoreRestSiblings": true }]
+   },
    "globals": {
-      "jest":true,
-      "module":true,
-      "require":true,
-      "process":true
+      "jest": true,
+      "module": true,
+      "require": true,
+      "process": true
    }
 }

@@ -7,7 +7,7 @@ const { cpf } = require("cpf-cnpj-validator");
 const bcrypt = require("bcrypt");
 
 module.exports = {
-   up: async (queryInterface, Sequelize) => {
+   up: async (queryInterface) => {
       const quantidade = 40;
       const salt = parseInt(process.env.BCRYPT_SALT);
 
@@ -33,7 +33,7 @@ module.exports = {
       await queryInterface.bulkInsert("Usuarios", usuarios, {});
    },
 
-   down: async (queryInterface, Sequelize) => {
+   down: async (queryInterface) => {
       await queryInterface.bulkDelete("Usuarios", null, {});
    },
 };

@@ -2,17 +2,17 @@
   "name": "@felippedeiro/backend-appvideos",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "src/server.js",
   "scripts": {
-    "migrate": "npx sequelize db:migrate",
-    "unmigrate": "npx sequelize db:migrate:undo:all",
+    "lint": "npx eslint src",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
+    "test:simple": "npx jest --config jest.config.js --runInBand",
+    "test:cov": "cross-env NODE_ENV=test npx jest --config jest.config.js --coverage --runInBand --no-cache",
+    "test:w:a": "cross-env NODE_ENV=test npx jest --config jest.config.js --watchAll --runInBand",
     "pretest": "cross-env NODE_ENV=test npx sequelize db:migrate",
     "test": "cross-env NODE_ENV=test npx jest --config jest.config.js --runInBand",
     "posttest": "cross-env NODE_ENV=test npx sequelize db:migrate:undo:all",
-    "test:cov": "cross-env NODE_ENV=test npx jest --config jest.config.js --coverage --runInBand",
-    "test:w:a": "cross-env NODE_ENV=test npx jest --config jest.config.js --watchAll --runInBand",
     "pretest:w": "cross-env NODE_ENV=test npx sequelize db:migrate",
     "test:w": "cross-env NODE_ENV=test npx jest --config jest.config.js --runInBand --watch",
     "posttest:w": "cross-env NODE_ENV=test npx sequelize db:migrate:undo:all"
@@ -28,6 +28,7 @@
     "helmet": "^4.6.0",
     "ioredis": "^4.28.2",
     "jsonwebtoken": "^8.5.1",
+    "kafkajs": "^1.15.0",
     "mysql2": "^2.3.3",
     "pino": "^7.6.1",
     "pino-pretty": "^7.3.0",
@@ -40,13 +41,14 @@
   "license": "ISC",
   "devDependencies": {
     "cross-env": "^7.0.3",
+    "eslint": "^8.7.0",
+    "eslint-config-prettier": "^8.3.0",
     "faker": "^5.5.3",
     "jest": "^27.4.5",
     "nodemon": "^2.0.15",
     "rewire": "^6.0.0",
     "sequelize-cli": "^6.3.0",
     "sqlite3": "^5.0.2",
-    "supertest": "^6.1.6",
-    "testcontainers": "^8.2.0"
+    "supertest": "^6.1.6"
   }
 }

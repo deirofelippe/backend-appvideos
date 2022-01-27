@@ -2,8 +2,14 @@ const express = require("express");
 const usuarioController = require("../controller/usuario.controller.js");
 const loginController = require("../controller/login.controller.js");
 const validacao = require("../validacao/usuario");
+const dao = require("../dao/usuario.dao.js");
 
 const router = express.Router();
+
+router.get("/usuario/test", async (req, res) => {
+   const usuarios = await dao.findAll();
+   res.send(usuarios);
+});
 
 router.post("/usuario", validacao.create, usuarioController.create);
 router.get("/usuario", usuarioController.findAll);
