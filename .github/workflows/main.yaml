@@ -1,10 +1,10 @@
 name: CI-CD
 
 on:
-  push:
-    branches: [main]
+#   push:
+#     branches: [main]
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, reopened]
   workflow_dispatch:
 
 jobs:
@@ -23,9 +23,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run test:simple test/unit
-      - run: npm run test test/integration/dao
-      - run: npm run test test/integration/routes
+      - run: sh run-tests.sh
 
       - name: Check linting
         run: npm run lint
@@ -36,28 +34,28 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  CD:
-    needs: [CI]
-    runs-on: ubuntu-latest
+#   CD:
+#     needs: [CI]
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
+#     steps:
+#       - uses: actions/checkout@v2
 
-      - name: Docker Login
-        uses: docker/login-action@v1.10.0
-        with:
-          username: ${{ secrets.DOCKERHUB_USER }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+#       - name: Docker Login
+#         uses: docker/login-action@v1.10.0
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USER }}
+#           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Docker Build and Push
-        uses: docker/build-push-action@v2.7.0
-        with:
-          context: ./
-          file: ./Dockerfile.prod
-          push: true
-          tags: |
-            felippedeiro/backend-appvideos:latest
-            felippedeiro/backend-appvideos:${{ github.run_number }}
+#       - name: Docker Build and Push
+#         uses: docker/build-push-action@v2.7.0
+#         with:
+#           context: ./
+#           file: ./Dockerfile.prod
+#           push: true
+#           tags: |
+#             felippedeiro/backend-appvideos:latest
+#             felippedeiro/backend-appvideos:${{ github.run_number }}
 
       # - uses: akhileshns/heroku-deploy@v3.12.12
       #   with:
