@@ -1,8 +1,8 @@
 # Backend Appvideos
 
--  Backend: github.com/felippedesouza/backend-appvideos
--  Frontend: github.com/felippedesouza/frontned-appvideos
--  Backend que implementa o consumer no kafka: github.com/felippedesouza/backend-kafka
+-  Backend: [](github.com/felippedesouza/backend-appvideos)
+-  Frontend: [](github.com/felippedesouza/frontend-appvideos)
+-  Backend que implementa o consumer no kafka: [](github.com/felippedesouza/backend-kafka)
 
 ## Clonando os diretórios
 
