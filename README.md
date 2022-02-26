@@ -27,13 +27,17 @@ O docker compose usa uma rede externa já criada, ao invés de ele criar, então
 
 Ordem de execução:
 
-1. docker-compose -f ./backend-appvideos/docker-compose.yaml up -d
 1. docker-compose -f ./backend-appvideos/containers/kafka/docker-compose.yaml up -d
 1. docker-compose -f ./backend-appvideos/containers/elastic/docker-compose.yaml up -d
+1. docker-compose -f ./backend-appvideos/docker-compose.yaml up -d
+
+   1. docker-compose exec backend-appvideos npx sequelize db:seed:all
+   1. docker-compose exec backend-appvideos npm start
 
 1. docker-compose -f ./backend-kafka/docker-compose.yaml up -d
 
-1. docker-compose -f ./frontned-appvideos/docker-compose.yaml up -d
+1. docker-compose -f ./fronted-appvideos/docker-compose.yaml up -d
+   1. docker-compose exec frontend-appvideos npm start
 
 ## Usando Kubernetes
 
