@@ -1,29 +1,55 @@
-#
+# Backend Appvideos
 
-## Checklist
+-  Backend: github.com/felippedesouza/backend-appvideos
+-  Frontend: github.com/felippedesouza/frontned-appvideos
+-  Backend que implementa o consumer no kafka: github.com/felippedesouza/backend-kafka
 
-Usuario: id, email, password, nome
+## Clonando os diretórios
 
-Vídeo: id_usuario, id, titulo, url, descricao
+Rode o script
 
--  frontend: handlebars
--  outros servicos usados: kafka, s3, terraform, k8s, pagseguro
--  middleware: estaAutenticado, estaAutorizado, estaValidado
--  service: se atualizar o cpf ou email, tem q verificar se outra pessoa que n seja ela mesma esteja usando
+```bash
+mkdir appvideos \
+ && cd appvideos \
+ && git clone https://github.com/felippedesouza/frontend-appvideos.git \
+ && git clone https://github.com/felippedesouza/backend-appvideos.git \
+ && git clone https://github.com/felippedesouza/backend-kafka.git
+```
 
-## Docker Composer
+## Usando Docker Composer
 
 O docker compose usa uma rede externa já criada, ao invés de ele criar, então é preciso criar uma rede. O mesmo serve pro volume do mysql.
 
 -  `docker create network --diver bridge appvideos`
 -  `docker volume create --name=v_mysql`
 
-**Espere terminar a criação dos containers de daca arquivo para executar os outros arquivos**
+**Espere terminar a criação dos containers de cada arquivo para executar os outros arquivos**
 
 Ordem de execução:
 
-1. docker-compose up -d
-1. docker-compose -f ./docker-compose.elastic.yaml up -d
+1. docker-compose -f ./backend-appvideos/containers/kafka/docker-compose.yaml up -d
+1. docker-compose -f ./backend-appvideos/containers/elastic/docker-compose.yaml up -d
+1. docker-compose -f ./backend-appvideos/docker-compose.yaml up -d
+
+   1. docker-compose exec backend-appvideos npx sequelize db:seed:all
+   1. docker-compose exec backend-appvideos npm start
+
+1. docker-compose -f ./backend-kafka/docker-compose.yaml up -d
+
+1. docker-compose -f ./fronted-appvideos/docker-compose.yaml up -d
+   1. docker-compose exec frontend-appvideos npm start
+
+## Usando Kubernetes
+
+kubectl apply -f ./backend-appvideos/k8s/1_mysql.yaml
+kubectl apply -f ./backend-appvideos/k8s/2_redis.yaml
+kubectl apply -f ./backend-appvideos/k8s/3_backend.yaml
+
+kubectl apply -f ./frontned-appvideos/k8s/frontend.yaml
+
+elastic
+
+kafka confluent
 
 ## Comandos usados
 
@@ -39,12 +65,20 @@ docker-compose -f compose-db.yaml down
 docker-compose -f compose-db.yaml logs -f mysql
 docker-compose -f compose-db.yaml logs -f phpmyadmin
 
-## PROD
+## Usando o SonarQube
 
-dockerfile.prod
-kubernetes configmap
-confluent cloud
-terraform digital ocean
+docker run \
+ --rm \
+ -e SONAR_HOST_URL=http://localhost:9000 \
+ -e SONAR_LOGIN=b966f0bf89b56317906880c5392f3ae36f1cc9aa \
+ -v "$(pwd):/usr/src" \
+ sonarsource/sonar-scanner-cli
+
+sonar-scanner \
+ -Dsonar.projectKey=backend-appvideos \
+ -Dsonar.sources=. \
+ -Dsonar.host.url=http://localhost:9000 \
+ -Dsonar.login=b966f0bf89b56317906880c5392f3ae36f1cc9aa
 
 ## Kubernetes comandos
 

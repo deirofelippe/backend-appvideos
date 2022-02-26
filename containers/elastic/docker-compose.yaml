@@ -1,0 +1,79 @@
+version: '3.2'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.2
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - bootstrap.memory_lock=true
+      - cluster.name=docker-cluster
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-XX:UseAVX=2 -Xms1g -Xmx1g
+      - ELASTIC_PASSWORD=changeme
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.16.2
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - elasticsearch.username=elastic
+      - elasticsearch.password=changeme
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+  
+  elastic-apm:
+    image: docker.elastic.co/apm/apm-server:7.16.2
+    container_name: elastic-apm
+    ports:
+      - "8200:8200"
+    command: >
+      apm-server -e
+        -E apm-server.rum.enabled=true
+        -E setup.kibana.host=kibana:5601
+        -E setup.template.settings.index.number_of_replicas=0
+        -E apm-server.kibana.enabled=true
+        -E apm-server.kibana.host=kibana:5601
+        -E output.elasticsearch.hosts=["elasticsearch:9200"]
+    depends_on:
+      - kibana
+      - elasticsearch
+
+  # logstash:
+  #   image: docker.elastic.co/logstash/logstash:7.16.2
+  #   container_name: logstash
+  #   volumes:
+  #     - './config/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro'
+  #     - './config/logstash/pipeline.conf:/usr/share/logstash/pipeline/logstash.conf:ro'
+  #   ports:
+  #     - "8080:8080"
+  #     - "5000:5000"
+  #     - "9600:9600"
+  #   environment:
+  #     LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+  #   depends_on:
+  #     - elasticsearch
+
+  # filebeat:
+  #   image: docker.elastic.co/beats/filebeat:7.16.2
+  #   container_name: filebeat
+  #   # volumes:
+  #   #     - "./config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"
+  #   depends_on:
+  #     - elasticsearch
+  #     - kibana
+  #   command: >
+  #     filebeat -e  \
+  #       -E setup.kibana.host=kibana:5601 \
+  #       -E output.elasticsearch.hosts=["elasticsearch:9200"]
+
+networks:
+   default:
+      external: true
+      name: appvideos

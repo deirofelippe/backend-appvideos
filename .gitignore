@@ -3,3 +3,4 @@ node_modules
 .esdata
 coverage
 .vscode
+.scannerwork
